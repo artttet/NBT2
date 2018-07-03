@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Омский взгляд</string>
+    <string name="routes">Маршруты</string>
+    <string name="places">Места</string>
+    <string name="map">Кaрта</string>
+    <string name="favorite">Избранное</string>
+    <string name="test">hallo</string>
+</resources>

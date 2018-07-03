@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0057A6</color>
+    <color name="colorPrimaryDark">#00396d</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGray">#a5a5a5</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhite75">#77ffffff</color>
+    <color name="colorStatusBarForPhotoView">#202020</color>
+</resources>
