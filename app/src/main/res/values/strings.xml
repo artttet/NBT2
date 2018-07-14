@@ -5,4 +5,16 @@
     <string name="map">Кaрта</string>
     <string name="favorite">Избранное</string>
     <string name="test">hallo</string>
+    <string name="frag1">This 1 fragment</string>
+    <string name="frag2">This 2 fragment</string>
+    <string name="frag3">This 3 fragment</string>
+    <string name="frag4">This 4 fragment</string>
+    <string name="route1">Вдоль по Любинскому</string>
+    <string name="route2">Пешком до Питера</string>
+    <string name="route3">По Омску с европейцами</string>
+    <string name="route4">"Вылитый" омск</string>
+    <string name="route5">Две крепости</string>
+    <string name="route6">Соборное кольцо</string>
+    <string name="route7">Вокруг "Кадетки"</string>
+
 </resources>

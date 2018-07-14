@@ -8,7 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.transition.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -16,14 +16,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '28.0.0'
+    buildToolsVersion '28.0.1'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha3'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     testImplementation 'junit:junit:4.12'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.android.material:material:1.0.0-alpha3'
+    implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.reactiveandroid:reactiveandroid:1.4.3'
 }
