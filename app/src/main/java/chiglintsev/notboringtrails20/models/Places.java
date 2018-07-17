@@ -26,7 +26,7 @@ public class Places extends Model {
     @Column(name = "check_favorite")
     public int check_favorite;
     @Column(name = "Id")
-    private long id;
+    public long id;
 
     public Places() {
         super();

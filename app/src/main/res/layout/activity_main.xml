@@ -5,9 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
 
-
-
-
     <FrameLayout
         android:id="@+id/for_fragment"
         android:layout_width="match_parent"
@@ -20,26 +17,11 @@
         style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemHorizontalTranslationEnabled="true"
         app:itemIconTint="@drawable/bnv_colors"
         app:itemTextColor="@drawable/bnv_colors"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/menu_bnv"
         app:labelVisibilityMode="labeled"
-        app:itemHorizontalTranslationEnabled="true"
-        />
-
-
-
-
-
-    <!--<com.google.android.material.bottomnavigation.BottomNavigationView-->
-        <!--android:id="@+id/bnv"-->
-        <!--style="@style/Widget.MaterialComponents.BottomNavigationView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:itemIconTint="@drawable/bnv_colors"-->
-        <!--app:itemTextColor="@drawable/bnv_colors"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:menu="@menu/menu_bnv" />-->
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/menu_bnv" />
 
 </android.support.constraint.ConstraintLayout>

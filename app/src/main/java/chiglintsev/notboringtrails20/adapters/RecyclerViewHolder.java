@@ -3,7 +3,6 @@ package chiglintsev.notboringtrails20.adapters;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,26 +24,35 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
     RecyclerViewHolder(View itemView) {
         super(itemView);
-        routeName = itemView.findViewById(R.id.title_route_card);
+        //FOR ROUTES
+        routeName = itemView.findViewById(R.id.name_route_card);
         routeImg = itemView.findViewById(R.id.img_route_card);
-        placeName = itemView.findViewById(R.id.title_place_card);
+        //FOR PLACES
+        placeName = itemView.findViewById(R.id.name_place_card);
         placeImg = itemView.findViewById(R.id.img_place_card);
+
         context = itemView.getContext();
     }
 
+    //BIND FOR ROUTES
     public void bind(Routes routes, int id) {
         routeName.setText(routes.title);
         routeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
+
+        //В 5 маршруте убирает текст в левый верхний угол
         if (id == 4) {
-            CardView.LayoutParams params = new CardView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            CardView.LayoutParams params = new CardView.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            );
             params.gravity = Gravity.TOP | Gravity.START;
             routeName.setLayoutParams(params);
         }
+
         Picasso.get().load(routes.img).fit().into(routeImg);
     }
 
+    //BIND FOR PLACES
     public void bind(Places places) {
-        Log.d("place", String.valueOf(itemView.getResources().getIdentifier(places.img_name, "drawable", context.getPackageName())));
         placeName.setText(places.name);
         placeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
         Picasso.get()

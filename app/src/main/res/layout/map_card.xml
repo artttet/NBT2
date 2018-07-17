@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/map_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="2dp">
+
+    <ImageView
+        android:id="@+id/img_map_card"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/name_map_card"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:background="#630057a6"
+        android:padding="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textStyle="italic|bold" />
+
+
+</android.support.design.card.MaterialCardView>

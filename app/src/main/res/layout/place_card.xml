@@ -18,7 +18,7 @@
         android:scaleType="centerCrop" />
 
     <TextView
-        android:id="@+id/title_place_card"
+        android:id="@+id/name_place_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
