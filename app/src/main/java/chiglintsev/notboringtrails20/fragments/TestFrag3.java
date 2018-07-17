@@ -13,7 +13,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 
 import chiglintsev.notboringtrails20.R;
 
-public class TestFrag3 extends Fragment implements OnMapReadyCallback {
+public class TestFrag3 extends Fragment {
 
     private Animation test;
     private View globalView;
@@ -51,8 +51,4 @@ public class TestFrag3 extends Fragment implements OnMapReadyCallback {
 
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-    }
 }
