@@ -20,19 +20,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-##---------------Begin: ReActiveAndroid  ----------
-
--keep class com.reactiveandroid.** { *; }
--keep class com.reactiveandroid.**.** { *; }
--keep class * extends com.reactiveandroid.Model
--keep class * extends com.reactiveandroid.internal.serializer.TypeSerializer
--keepattributes *Annotation*
--keepattributes Table
--keepattributes Column
--keepattributes PrimaryKey
--keepattributes Unique
--keepattributes UniqueGroup
--keepattributes Index
--keepattributes IndexGroup
-
-##---------------End: ReActiveAndroid  ----------

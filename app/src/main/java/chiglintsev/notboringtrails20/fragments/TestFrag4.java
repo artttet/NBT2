@@ -1,13 +1,14 @@
 package chiglintsev.notboringtrails20.fragments;
 
+
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.fragment.app.Fragment;
 import chiglintsev.notboringtrails20.R;
 
 public class TestFrag4 extends Fragment {

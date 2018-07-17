@@ -16,5 +16,6 @@
     <string name="route5">Две крепости</string>
     <string name="route6">Соборное кольцо</string>
     <string name="route7">Вокруг "Кадетки"</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

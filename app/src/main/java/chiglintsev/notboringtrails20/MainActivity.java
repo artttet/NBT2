@@ -2,39 +2,30 @@ package chiglintsev.notboringtrails20;
 
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
-
-import com.reactiveandroid.query.*;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.reactiveandroid.ReActiveAndroid;
-import com.reactiveandroid.ReActiveConfig;
-import com.reactiveandroid.internal.database.DatabaseConfig;
-
-import java.util.List;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
-import chiglintsev.notboringtrails20.fragments.TestFrag2;
 import chiglintsev.notboringtrails20.fragments.TestFrag3;
 import chiglintsev.notboringtrails20.fragments.TestFrag4;
-import chiglintsev.notboringtrails20.models.Database2;
-import chiglintsev.notboringtrails20.models.Places;
-import chiglintsev.notboringtrails20.models.Route1;
-import chiglintsev.notboringtrails20.models.Route2;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    public androidx.fragment.app.FragmentTransaction trans;
+    public FragmentTransaction trans;
     private RoutesFragment frag1;
-    private TestFrag2 frag2;
+    private PlacesFragment frag2;
     private TestFrag3 frag3;
     private TestFrag4 frag4;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
+
 
     {
         onNavigation = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -69,11 +60,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initDb();
-        List<Places> placesList = Select.columns("name").from(Places.class).fetch();
-        Log.d("place", String.valueOf(placesList));
+
+
         frag1 = new RoutesFragment();
-        frag2 = new TestFrag2();
+        frag2 = new PlacesFragment();
         frag3 = new TestFrag3();
         frag4 = new TestFrag4();
         bnvWork();
@@ -97,13 +87,8 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
-    private void initDb(){
-        DatabaseConfig appDatabaseConfig = new DatabaseConfig.Builder(Database2.class)
-                .addModelClasses(Places.class, Route1.class, Route2.class)
-                .build();
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
 
-        ReActiveAndroid.init(new ReActiveConfig.Builder(this)
-                .addDatabaseConfigs(appDatabaseConfig)
-                .build());
     }
 }

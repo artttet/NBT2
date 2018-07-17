@@ -1,6 +1,9 @@
 package chiglintsev.notboringtrails20.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.SingletonFonts;
 import chiglintsev.notboringtrails20.models.Places;
@@ -43,9 +44,16 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Places places) {
+        Log.d("place", String.valueOf(itemView.getResources().getIdentifier(places.img_name, "drawable", context.getPackageName())));
         placeName.setText(places.name);
-        routeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
-        Picasso.get().load(places.img_name).fit().into(placeImg);
+        placeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
+        Picasso.get()
+                .load(
+                        itemView.getResources().getIdentifier(places.img_name, "drawable", context.getPackageName())
+                )
+                .fit()
+                .centerCrop()
+                .into(placeImg);
     }
 
 
