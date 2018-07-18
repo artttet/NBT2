@@ -1,6 +1,7 @@
 package chiglintsev.notboringtrails20.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -11,13 +12,16 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import chiglintsev.notboringtrails20.PlaceActivity2;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.SingletonFonts;
 import chiglintsev.notboringtrails20.models.Places;
 import chiglintsev.notboringtrails20.models.Routes;
 
-class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
+
+class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    private final static String KEY_FOR_PLACE_id="id_key";
     private TextView routeName, placeName;
     private ImageView routeImg, placeImg;
     private Context context;
@@ -52,7 +56,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     //BIND FOR PLACES
-    public void bind(Places places) {
+    public void bind(final Places places) {
         placeName.setText(places.name);
         placeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
         Picasso.get()
@@ -62,6 +66,16 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
                 .fit()
                 .centerCrop()
                 .into(placeImg);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long id = places.id;
+                Intent intent = new Intent(context, PlaceActivity2.class);
+                intent.putExtra(KEY_FOR_PLACE_id, id);
+                context.startActivity(intent);
+            }
+        });
     }
 
 

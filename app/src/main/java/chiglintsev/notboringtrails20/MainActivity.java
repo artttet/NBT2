@@ -8,10 +8,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
-import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 
 
 public class MainActivity extends AppCompatActivity {

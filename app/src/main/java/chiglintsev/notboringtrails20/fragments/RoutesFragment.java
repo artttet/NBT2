@@ -21,8 +21,6 @@ public class RoutesFragment extends Fragment {
 
 
     private RoutesAdapter adapter;
-    private Animation transition;
-    private View globalView;
     private LinearLayoutManager linearLayoutManager;
 
     //создание объектов для списка маршрутов
@@ -41,6 +39,7 @@ public class RoutesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new RoutesAdapter();
@@ -78,8 +77,8 @@ public class RoutesFragment extends Fragment {
     }
 
     private void animOpen() {
-        transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        globalView = getView().findViewById(R.id.routes);
+        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
+        View globalView = getView().findViewById(R.id.routes);
         globalView.startAnimation(transition);
     }
 }

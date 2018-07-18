@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,15 +60,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     };
 
     private ArrayList<Places> placesArrayList;
-    private Marker marker;
-    private Animation transition;
-    private View globalView;
     private GoogleMap myMap;
     private LocationManager locationManager;
+    private CameraPosition restorePosition;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         //Запрос в БД за местами
@@ -96,6 +96,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        restorePosition = myMap.getCameraPosition();
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         myMap = googleMap;
 
@@ -109,7 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         );
 
         for (final Places place : placesArrayList) {
-            marker = myMap.addMarker(
+             myMap.addMarker(
                     new MarkerOptions().position(
                             new LatLng(place.lat, place.lng)
                     )
@@ -162,12 +168,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (!myMap.isMyLocationEnabled())
                 myMap.setMyLocationEnabled(true);
 
-            Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-            LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            myMap.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
-            );
+            if(restorePosition == null){
+                Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                myMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
+                );
+            }else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+
         }
     }
 
@@ -178,8 +187,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void animOpen() {
-        transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        globalView = getView().findViewById(R.id.map);
+        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
+        View globalView = getView().findViewById(R.id.map);
         globalView.startAnimation(transition);
     }
 
@@ -194,10 +203,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .from(Places.class)
                 .execute();
         placesArrayList = new ArrayList<>();
-        for (int i = 0; i < placesList.size(); i++) {
-            Places place = placesList.get(i);
-            placesArrayList.add(place);
-        }
+        placesArrayList.addAll(placesList);
     }
 }
 

@@ -23,14 +23,13 @@ import chiglintsev.notboringtrails20.models.Places;
 
 public class PlacesFragment extends Fragment {
 
-    private Animation transition;
-    private View globalView;
     private LinearLayoutManager linearLayoutManager;
     private PlacesAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
     }
 
@@ -62,8 +61,8 @@ public class PlacesFragment extends Fragment {
     }
 
     private void animOpen() {
-        transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        globalView = getView().findViewById(R.id.places);
+        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
+        View globalView = getView().findViewById(R.id.places);
         globalView.startAnimation(transition);
     }
 
@@ -76,11 +75,7 @@ public class PlacesFragment extends Fragment {
 
     private void workWithList() {
         List<Places> placesList = new Select("Id", "name", "image_name").from(Places.class).execute();
-        ArrayList<Places> placesArrayList = new ArrayList<>();
-        for (int i = 0; i < placesList.size(); i++) {
-            Places place = placesList.get(i);
-            placesArrayList.add(place);
-        }
+        ArrayList<Places> placesArrayList = new ArrayList<>(placesList);
         adapter = new PlacesAdapter();
         adapter.addAll(placesArrayList);
     }
