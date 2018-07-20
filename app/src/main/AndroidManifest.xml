@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="chiglintsev.notboringtrails20">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -33,6 +32,8 @@
             android:value="chiglintsev.notboringtrails20.models.Places" />
 
         <activity
+            android:launchMode="singleInstance"
+            android:screenOrientation="userPortrait"
             android:name=".MainActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -58,9 +59,16 @@
             android:value="AIzaSyBPKy5WjLXHz6kDd8GzYVvldDDxoe1RNi8" />
 
         <activity
-            android:label=" "
+            android:screenOrientation="userPortrait"
             android:name=".PlaceActivity2"
+            android:label=" "
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".PhotoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
     </application>

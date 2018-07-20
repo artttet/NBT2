@@ -1,9 +1,11 @@
 package chiglintsev.notboringtrails20;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +26,8 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
     private final static String KEY_FOR_PHOTO_RES = "resID_key";
     private final static String KEY_FOR_PHOTO_TITLE = "title_key";
     private TextView place_titleV, place_main_textV, place_infoV, place_addressV, place_info_titleV;
-    private ImageView place_img_view_nameV, favorite;
+    private ImageView place_img_view_nameV;
+    private ImageButton favorite;
     private long id;
     private double place_Lat, place_Lng;
     private int resID;
@@ -63,9 +66,9 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
         check_favorite = place.check_favorite;
 
         if (check_favorite == 0) {
-            favorite.setImageResource(R.drawable.ic_favorite_border_white_36dp);
+            favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
         } else if (check_favorite == 1) {
-            favorite.setImageResource(R.drawable.ic_favorite_white_36dp);
+            favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
         }
 
         if (place.info == null) place_info_titleV.setVisibility(View.GONE);
@@ -99,13 +102,13 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
     public void like(View view) {
 
         if (check_favorite == 1) {
-            favorite.setImageResource(R.drawable.ic_favorite_border_white_36dp);
+            favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
             check_favorite = 0;
             new Update(Places.class).set("check_favorite = 0").where("Id = ?", id).execute();
 
 
         } else if (check_favorite == 0) {
-            favorite.setImageResource(R.drawable.ic_favorite_white_36dp);
+            favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
             check_favorite = 1;
             new Update(Places.class).set("check_favorite = 1").where("Id = ?", id).execute();
 
@@ -113,11 +116,10 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void openPhoto(View view) {
-        //Intent intent = new Intent(PlaceActivity2.this, PhotoActivity.class);
-        //intent.putExtra(KEY_FOR_PHOTO_RES, resID);
-        //intent.putExtra(KEY_FOR_PHOTO_TITLE, place_titleV.getText());
-        //startActivity(intent);
-
+        Intent intent = new Intent(PlaceActivity2.this, PhotoActivity.class);
+        intent.putExtra(KEY_FOR_PHOTO_TITLE, place_titleV.getText());
+        intent.putExtra(KEY_FOR_PHOTO_RES, resID);
+        startActivity(intent);
     }
 
     @Override

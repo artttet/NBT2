@@ -1,5 +1,6 @@
 package chiglintsev.notboringtrails20.fragments;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import chiglintsev.notboringtrails20.PlaceActivity2;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.SingletonFonts;
 import chiglintsev.notboringtrails20.models.Places;
@@ -40,7 +43,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int PERMISSION_CODE = 14;
-
+    private final static String KEY_FOR_PLACE_id = "id_key";
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -98,7 +101,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
-        restorePosition = myMap.getCameraPosition();
+        try{
+            restorePosition = myMap.getCameraPosition();
+        }catch (NullPointerException e){
+
+        }
     }
 
     @Override
@@ -115,7 +122,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         );
 
         for (final Places place : placesArrayList) {
-             myMap.addMarker(
+            myMap.addMarker(
                     new MarkerOptions().position(
                             new LatLng(place.lat, place.lng)
                     )
@@ -156,6 +163,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                int markerId = Integer.parseInt(marker.getId().substring(1));
+                Places place = placesArrayList.get(markerId);
+                Intent intent = new Intent(getActivity(), PlaceActivity2.class);
+                intent.putExtra(KEY_FOR_PLACE_id, place.id);
+                startActivity(intent);
+            }
+        });
+
         if (ContextCompat.checkSelfPermission(
                 getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
         ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
@@ -169,13 +187,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 myMap.setMyLocationEnabled(true);
 
 
-            if(restorePosition == null){
+            if (restorePosition == null) {
                 Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                myMap.animateCamera(
-                        CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
-                );
-            }else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+
+                try {
+                    LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
+                    myMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
+                    );
+                } catch (NullPointerException e) {
+                    Log.d("place", "OSHIBKA ");
+                }
+            } else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
 
         }
     }

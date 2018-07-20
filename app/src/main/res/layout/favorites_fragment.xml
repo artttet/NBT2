@@ -6,17 +6,21 @@
 
     <TextView
         android:id="@+id/void_favorite"
-        android:textSize="32sp"
-        android:padding="32dp"
-        android:gravity="center"
-        android:layout_gravity="top|center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/void_favorite"/>
+        android:layout_gravity="top|center"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="@string/void_favorite"
+        android:textSize="32sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_favorites"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scrollbarSize="6dp"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarThumbVertical="@color/colorPrimaryDark"
+        android:scrollbars="vertical" />
 
 </FrameLayout>

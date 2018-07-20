@@ -21,7 +21,7 @@ import chiglintsev.notboringtrails20.models.Routes;
 
 
 class RecyclerViewHolder extends RecyclerView.ViewHolder {
-    private final static String KEY_FOR_PLACE_id="id_key";
+    private final static String KEY_FOR_PLACE_id = "id_key";
     private TextView routeName, placeName;
     private ImageView routeImg, placeImg;
     private Context context;
@@ -52,7 +52,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
             routeName.setLayoutParams(params);
         }
 
-        Picasso.get().load(routes.img).fit().into(routeImg);
+        Picasso.get().load(routes.img).fit().centerCrop(1).into(routeImg);
     }
 
     //BIND FOR PLACES

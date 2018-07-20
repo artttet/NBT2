@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".PlaceActivity"
+    tools:context=".PlaceActivity2"
     tools:showIn="@layout/activity_place2">
 
 
@@ -33,6 +33,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:gravity="center"
 
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
