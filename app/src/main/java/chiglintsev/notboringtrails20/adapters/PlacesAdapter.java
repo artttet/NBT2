@@ -22,7 +22,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.places_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.place_card, parent, false);
         return new RecyclerViewHolder(view);
     }
 
@@ -35,6 +35,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
     @Override
     public int getItemCount() {
         return aList.size();
+    }
+
+    public void setList(ArrayList<Places> list) {
+        this.aList = list;
+        notifyDataSetChanged();
     }
 }
 

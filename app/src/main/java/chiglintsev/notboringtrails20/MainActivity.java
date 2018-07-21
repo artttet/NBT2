@@ -8,23 +8,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
+import chiglintsev.notboringtrails20.fragments.MapFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
-import chiglintsev.notboringtrails20.fragments.TestFrag3;
-import chiglintsev.notboringtrails20.fragments.TestFrag4;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity {
 
     public FragmentTransaction trans;
-    private RoutesFragment frag1;
-    private PlacesFragment frag2;
-    private TestFrag3 frag3;
-    private TestFrag4 frag4;
+    private RoutesFragment routesFragment;
+    private PlacesFragment placesFragment;
+    private MapFragment mapFragment;
+    private FavoritesFragment frag4;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
+    private MaterialSearchView searchView;
 
 
     {
@@ -35,15 +35,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 switch (item.getItemId()) {
                     case R.id.routesBnv:
-                        transition(frag1);
+                        transition(routesFragment);
 
                         return true;
                     case R.id.placesBnv:
-                        transition(frag2);
+                        transition(placesFragment);
 
                         return true;
                     case R.id.mapBnv:
-                        transition(frag3);
+                        transition(mapFragment);
 
                         return true;
                     case R.id.favoriteBnv:
@@ -62,18 +62,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_main);
 
 
-        frag1 = new RoutesFragment();
-        frag2 = new PlacesFragment();
-        frag3 = new TestFrag3();
-        frag4 = new TestFrag4();
+
+        routesFragment = new RoutesFragment();
+        placesFragment = new PlacesFragment();
+        mapFragment = new MapFragment();
+        frag4 = new FavoritesFragment();
         bnvWork();
-        transition(frag1);
+        transition(routesFragment);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     private void bnvWork() {
@@ -81,14 +81,55 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigation);
     }
 
-    private void transition(Fragment frag) {
+    private void transition(Fragment fragment) {
         trans = getSupportFragmentManager().beginTransaction();
-        trans.replace(R.id.for_fragment, frag);
+        trans.replace(R.id.for_fragment, fragment);
         trans.commit();
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        searchView.setMenuItem(item);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
-    }
+//    private void addSearch(){
+//        PlacesAdapter adapter = PlacesFragment
+//
+//        searchView = findViewById(R.id.search_view);
+//
+//        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                ArrayList<Places> result = new ArrayList<>();
+//                for(Places place: placesArrayList){
+//                    if(place.name.toLowerCase().contains(query.toLowerCase())){
+//                        result.add(place);
+//                    }
+//                }
+//                adapter.setList(result);
+//                searchView.hideKeyboard(searchView);
+//                searchView.clearFocus();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if(!newText.isEmpty()) {
+//                    ArrayList<Places> result = new ArrayList<>();
+//                    for (Places place : placesArrayList) {
+//                        if (place.name.toLowerCase().contains(newText.toLowerCase())) {
+//                            result.add(place);
+//                        }
+//                        adapter.setList(result);
+//                    }
+//                }else if(newText.isEmpty()){
+//                    adapter.setList(placesArrayList);
+//                }
+//                return false;
+//            }
+//        });
+//    }
 }

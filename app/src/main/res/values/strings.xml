@@ -17,5 +17,12 @@
     <string name="route6">Соборное кольцо</string>
     <string name="route7">Вокруг "Кадетки"</string>
     <string name="title_activity_maps">Map</string>
+    <string name="void_favorite">Вы пока ничего не добавляли…</string>
+    <string name="title_activity_place2">PlaceActivity2</string>
+    <string name="info_title">Инфо: </string>
+    <string name="on_map">На карте: </string>
+    <string name="google_map_api_pc">AIzaSyBPKy5WjLXHz6kDd8GzYVvldDDxoe1RNi8</string>
+    <string name="google_map_api_note">AIzaSyCzQCPYCHM7viL7JMbr3WUZDa8vVMaNuyQ</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

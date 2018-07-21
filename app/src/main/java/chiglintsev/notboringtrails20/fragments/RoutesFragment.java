@@ -21,10 +21,9 @@ public class RoutesFragment extends Fragment {
 
 
     private RoutesAdapter adapter;
-    private Animation transition;
-    private View globalView;
     private LinearLayoutManager linearLayoutManager;
 
+    //создание объектов для списка маршрутов
     private static List<Routes> routesList() {
         ArrayList<Routes> list = new ArrayList<>();
         list.add(new Routes(0, "Вдоль по Любинскому", R.drawable.route1));
@@ -40,10 +39,11 @@ public class RoutesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
         linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new RoutesAdapter();
         adapter.addAll(routesList());
-
     }
 
     @Override
@@ -54,14 +54,19 @@ public class RoutesFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        animOpen();
+
+        //инициалицазия и заполнение списка
         recyclerWork();
+
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        globalView.startAnimation(transition);
+
+        //animation for open fragment
+        animOpen();
     }
 
     private void recyclerWork() {
@@ -72,8 +77,8 @@ public class RoutesFragment extends Fragment {
     }
 
     private void animOpen() {
-        transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        globalView = getView().findViewById(R.id.frag1);
+        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
+        View globalView = getView().findViewById(R.id.routes);
+        globalView.startAnimation(transition);
     }
-
 }

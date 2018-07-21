@@ -7,4 +7,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorWhite75">#77ffffff</color>
     <color name="colorStatusBarForPhotoView">#202020</color>
+    <color name="colorVoid">#00ffffff</color>
 </resources>
