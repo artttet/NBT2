@@ -36,6 +36,11 @@ public class PlacesAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
     public int getItemCount() {
         return aList.size();
     }
+
+    public void setList(ArrayList<Places> list){
+        this.aList = list;
+        notifyDataSetChanged();
+    }
 }
 
 

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,9 +100,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
-        try{
+        try {
             restorePosition = myMap.getCameraPosition();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
     }
@@ -121,6 +120,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 )
         );
 
+        //добавляет маркеры с infoWindow и слушателем на них
+        addMarkers();
+
+        if (ContextCompat.checkSelfPermission(
+                getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED) {
+
+            //запрос разрешения на получения геолокации
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
+        } else {
+            if (!myMap.isMyLocationEnabled())
+                myMap.setMyLocationEnabled(true);
+
+            //проверка для восстановления позиции камеры при переключении между фрагментами
+            if (restorePosition == null) {
+                Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                try {
+                    LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
+                    myMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
+                    );
+                } catch (NullPointerException e) {
+                }
+
+            } else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        locationManager.removeUpdates(locationListener);
+    }
+
+    private void animOpen() {
+        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
+        View globalView = getView().findViewById(R.id.map);
+        globalView.startAnimation(transition);
+    }
+
+    private void addMFragment() {
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    private void loadObjects() {
+        List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
+                .from(Places.class)
+                .execute();
+        placesArrayList = new ArrayList<>();
+        placesArrayList.addAll(placesList);
+    }
+
+    private void addMarkers() {
         for (final Places place : placesArrayList) {
             myMap.addMarker(
                     new MarkerOptions().position(
@@ -173,61 +231,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 startActivity(intent);
             }
         });
-
-        if (ContextCompat.checkSelfPermission(
-                getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED) {
-
-            //запрос разрешения на получения геолокации
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
-        } else {
-            if (!myMap.isMyLocationEnabled())
-                myMap.setMyLocationEnabled(true);
-
-
-            if (restorePosition == null) {
-                Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                try {
-                    LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
-                    myMap.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
-                    );
-                } catch (NullPointerException e) {
-                    Log.d("place", "OSHIBKA ");
-                }
-            } else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
-
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        locationManager.removeUpdates(locationListener);
-    }
-
-    private void animOpen() {
-        Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View globalView = getView().findViewById(R.id.map);
-        globalView.startAnimation(transition);
-    }
-
-    private void addMFragment() {
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
-
-    private void loadObjects() {
-        List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
-                .from(Places.class)
-                .execute();
-        placesArrayList = new ArrayList<>();
-        placesArrayList.addAll(placesList);
     }
 }
 

@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,16 @@ import chiglintsev.notboringtrails20.models.Places;
 public class PlacesFragment extends Fragment {
 
     private LinearLayoutManager linearLayoutManager;
-    private PlacesAdapter adapter;
+    public PlacesAdapter adapter;
+    private MaterialSearchView searchView;
+    public ArrayList<Places> placesArrayList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
+
     }
 
     @Override
@@ -51,6 +55,8 @@ public class PlacesFragment extends Fragment {
         //инициалицазия и заполнение списка
         recyclerWork();
     }
+
+
 
     @Override
     public void onResume() {
@@ -75,7 +81,7 @@ public class PlacesFragment extends Fragment {
 
     private void workWithList() {
         List<Places> placesList = new Select("Id", "name", "image_name").from(Places.class).execute();
-        ArrayList<Places> placesArrayList = new ArrayList<>(placesList);
+        placesArrayList = new ArrayList<>(placesList);
         adapter = new PlacesAdapter();
         adapter.addAll(placesArrayList);
     }

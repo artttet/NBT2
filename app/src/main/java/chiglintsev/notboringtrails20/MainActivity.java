@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
 import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment;
     private FavoritesFragment frag4;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
+    private MaterialSearchView searchView;
 
 
     {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         routesFragment = new RoutesFragment();
         placesFragment = new PlacesFragment();
         mapFragment = new MapFragment();
@@ -81,4 +86,50 @@ public class MainActivity extends AppCompatActivity {
         trans.replace(R.id.for_fragment, fragment);
         trans.commit();
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search, menu);
+//        MenuItem item = menu.findItem(R.id.action_search);
+//        searchView.setMenuItem(item);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+//    private void addSearch(){
+//        PlacesAdapter adapter = PlacesFragment
+//
+//        searchView = findViewById(R.id.search_view);
+//
+//        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                ArrayList<Places> result = new ArrayList<>();
+//                for(Places place: placesArrayList){
+//                    if(place.name.toLowerCase().contains(query.toLowerCase())){
+//                        result.add(place);
+//                    }
+//                }
+//                adapter.setList(result);
+//                searchView.hideKeyboard(searchView);
+//                searchView.clearFocus();
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                if(!newText.isEmpty()) {
+//                    ArrayList<Places> result = new ArrayList<>();
+//                    for (Places place : placesArrayList) {
+//                        if (place.name.toLowerCase().contains(newText.toLowerCase())) {
+//                            result.add(place);
+//                        }
+//                        adapter.setList(result);
+//                    }
+//                }else if(newText.isEmpty()){
+//                    adapter.setList(placesArrayList);
+//                }
+//                return false;
+//            }
+//        });
+//    }
 }
