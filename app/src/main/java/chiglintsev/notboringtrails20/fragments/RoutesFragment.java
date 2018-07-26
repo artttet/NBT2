@@ -67,6 +67,7 @@ public class RoutesFragment extends Fragment {
 
         //animation for open fragment
         animOpen();
+
     }
 
     private void recyclerWork() {

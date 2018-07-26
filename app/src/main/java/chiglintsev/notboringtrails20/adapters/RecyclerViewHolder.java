@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +63,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
         double test2 = (double) test / 1000;
         String distance = String.format("%.2f", test2);
         placeDistance.setText(distance + "km");
-        Log.d("place", String.valueOf(test2));
+        placeDistance.setTypeface(SingletonFonts.getInstance(context).getFont1());
 
         Picasso.get()
                 .load(

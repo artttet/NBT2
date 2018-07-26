@@ -36,19 +36,19 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.routesBnv:
                         transition(routesFragment);
-
+                        getSupportActionBar().setTitle("Маршруты");
                         return true;
                     case R.id.placesBnv:
                         transition(placesFragment);
-
+                        getSupportActionBar().setTitle("Места");
                         return true;
                     case R.id.mapBnv:
                         transition(mapFragment);
-
+                        getSupportActionBar().setTitle("Карта");
                         return true;
                     case R.id.favoriteBnv:
                         transition(frag4);
-
+                        getSupportActionBar().setTitle("Избранное");
                         return true;
                 }
                 return false;
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         frag4 = new FavoritesFragment();
         bnvWork();
+        getSupportActionBar().setTitle("Маршруты");
         transition(routesFragment);
     }
 

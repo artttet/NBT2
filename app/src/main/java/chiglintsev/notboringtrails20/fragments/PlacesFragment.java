@@ -1,9 +1,9 @@
 package chiglintsev.notboringtrails20.fragments;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +33,29 @@ import chiglintsev.notboringtrails20.models.Places;
 
 public class PlacesFragment extends Fragment {
 
-    private LinearLayoutManager linearLayoutManager;
     public PlacesAdapter adapter;
-    private MaterialSearchView searchView;
     public ArrayList<Places> placesArrayList;
+    private LinearLayoutManager linearLayoutManager;
+    private MaterialSearchView searchView;
     private Location userLocation;
+    private LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onLocationChanged(Location location) {
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +81,9 @@ public class PlacesFragment extends Fragment {
 
         //инициалицазия и заполнение списка
         recyclerWork();
-    }
 
+
+    }
 
     @Override
     public void onResume() {
@@ -99,11 +117,15 @@ public class PlacesFragment extends Fragment {
 
         for (Places place : placesList) {
             place.distance = calculateDistance(place);
+            Location placeLocation = new Location("placeLocation");
+            placeLocation.setLatitude(place.lat);
+            placeLocation.setLongitude(place.lng);
+            Log.d("place", "user" + String.valueOf(userLocation));
+            Log.d("place", "place" + String.valueOf(placeLocation));
             placesArrayList.add(place);
         }
 
         Collections.sort(placesArrayList, new Comparator<Places>() {
-            @Override
             public int compare(Places p1, Places p2) {
                 return (int) p1.distance - (int) p2.distance;
             }
@@ -122,14 +144,16 @@ public class PlacesFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 14);
         }
-        userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(userLocation == null){
+            userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
     }
 
-    public double calculateDistance(Places place) {
+    public float calculateDistance(Places place) {
         Location placeLocation = new Location("placeLocation");
         placeLocation.setLatitude(place.lat);
         placeLocation.setLongitude(place.lng);
-        double placeDistance = userLocation.distanceTo(placeLocation);
-        return placeDistance;
+        return (float) userLocation.distanceTo(placeLocation);
     }
 }
