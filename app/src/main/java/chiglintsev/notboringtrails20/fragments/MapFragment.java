@@ -160,8 +160,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void animOpen() {
         Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View globalView = getView().findViewById(R.id.map);
-        globalView.startAnimation(transition);
+        View view = getView().findViewById(R.id.map);
+        view.startAnimation(transition);
     }
 
     private void addMFragment() {

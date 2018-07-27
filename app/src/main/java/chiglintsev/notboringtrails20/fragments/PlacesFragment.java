@@ -8,10 +8,15 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -61,6 +66,7 @@ public class PlacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         addLocations();
     }
@@ -75,14 +81,17 @@ public class PlacesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ActiveAndroid.initialize(getActivity());
 
-
         //создание адаптера с данными из БД
         workWithList();
 
         //инициалицазия и заполнение списка
         recyclerWork();
 
+        //инициализация и работа с тулбаром
+        workWithToolbar(view);
 
+        //работа с поиском
+        addSearch(view);
     }
 
     @Override
@@ -95,8 +104,8 @@ public class PlacesFragment extends Fragment {
 
     private void animOpen() {
         Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View globalView = getView().findViewById(R.id.places);
-        globalView.startAnimation(transition);
+        View view = getView().findViewById(R.id.recycler_places);
+        view.startAnimation(transition);
     }
 
     private void recyclerWork() {
@@ -106,9 +115,13 @@ public class PlacesFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    private void workWithToolbar(View view){
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("Места");
+    }
+
     private void workWithList() {
-
-
         List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
                 .from(Places.class)
                 .execute();
@@ -116,12 +129,13 @@ public class PlacesFragment extends Fragment {
         placesArrayList = new ArrayList<>();
 
         for (Places place : placesList) {
-            place.distance = calculateDistance(place);
+            try {
+                place.distance = calculateDistance(place);
+            } catch (NullPointerException e) {
+            }
             Location placeLocation = new Location("placeLocation");
             placeLocation.setLatitude(place.lat);
             placeLocation.setLongitude(place.lng);
-            Log.d("place", "user" + String.valueOf(userLocation));
-            Log.d("place", "place" + String.valueOf(placeLocation));
             placesArrayList.add(place);
         }
 
@@ -145,7 +159,7 @@ public class PlacesFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 14);
         }
         userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(userLocation == null){
+        if (userLocation == null) {
             userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
     }
@@ -155,5 +169,50 @@ public class PlacesFragment extends Fragment {
         placeLocation.setLatitude(place.lat);
         placeLocation.setLongitude(place.lng);
         return (float) userLocation.distanceTo(placeLocation);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("place2", "+++");
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
+    }
+
+    private void addSearch(View view) {
+        searchView = view.findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ArrayList<Places> result = new ArrayList<>();
+                for (Places place : placesArrayList) {
+                    if (place.name.toLowerCase().contains(query.toLowerCase())) {
+                        result.add(place);
+                    }
+                }
+                adapter.setList(result);
+                searchView.hideKeyboard(searchView);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.isEmpty()) {
+                    ArrayList<Places> result = new ArrayList<>();
+                    for (Places place : placesArrayList) {
+                        if (place.name.toLowerCase().contains(newText.toLowerCase())) {
+                            result.add(place);
+                        }
+                        adapter.setList(result);
+                    }
+                } else if (newText.isEmpty()) {
+                    adapter.setList(placesArrayList);
+                }
+                return false;
+            }
+        });
     }
 }

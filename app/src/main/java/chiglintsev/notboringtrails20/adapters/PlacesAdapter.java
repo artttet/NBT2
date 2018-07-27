@@ -17,7 +17,9 @@ public class PlacesAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
     private ArrayList<Places> aList = new ArrayList<>();
 
     public void addAll(List<Places> list) {
+        int pos = getItemCount();
         this.aList.addAll(list);
+        notifyItemRangeInserted(pos, this.aList.size());
     }
 
     @Override

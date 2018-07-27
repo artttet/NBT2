@@ -2,9 +2,13 @@ package chiglintsev.notboringtrails20.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -22,6 +26,7 @@ public class RoutesFragment extends Fragment {
 
     private RoutesAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
+    private Toolbar toolbar;
 
     //создание объектов для списка маршрутов
     private static List<Routes> routesList() {
@@ -40,7 +45,7 @@ public class RoutesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
+        setHasOptionsMenu(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new RoutesAdapter();
         adapter.addAll(routesList());
@@ -58,6 +63,9 @@ public class RoutesFragment extends Fragment {
         //инициалицазия и заполнение списка
         recyclerWork();
 
+        toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("Маршруты");
 
     }
 
@@ -67,7 +75,7 @@ public class RoutesFragment extends Fragment {
 
         //animation for open fragment
         animOpen();
-
+        
     }
 
     private void recyclerWork() {
@@ -79,7 +87,16 @@ public class RoutesFragment extends Fragment {
 
     private void animOpen() {
         Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View globalView = getView().findViewById(R.id.routes);
-        globalView.startAnimation(transition);
+        View view = getView().findViewById(R.id.recycler_routes);
+        view.startAnimation(transition);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_search, menu);
+        menu.removeItem(R.id.action_search);
+        //searchView.setMenuItem(item);
+
     }
 }

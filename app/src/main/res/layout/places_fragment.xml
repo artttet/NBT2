@@ -1,31 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/places"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.RecyclerView
-        android:padding="4dp"
-        android:id="@+id/recycler_places"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/places"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:scrollbarSize="6dp"
-        android:scrollbarStyle="outsideInset"
-        android:scrollbarThumbVertical="@color/colorPrimaryDark"
-        android:scrollbars="vertical" />
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@color/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:titleTextColor="@color/colorWhite">
+
+        </android.support.v7.widget.Toolbar>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_places"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="8dp"
+            android:scrollbarSize="6dp"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/colorPrimaryDark"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 
     <com.miguelcatalan.materialsearchview.MaterialSearchView
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:searchBackground="@color/colorPrimary"
-        app:searchSuggestionBackground="@color/colorWhite"
-        app:searchBackIcon="@drawable/ic_arrow_back_white_24dp"
         android:hint="Поиск..."
         android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"/>
-
-
+        android:textColorHint="#FFFFFF"
+        app:searchBackIcon="@drawable/ic_arrow_back_white_24dp"
+        app:searchBackground="@color/colorPrimary"
+        app:searchSuggestionBackground="@color/colorWhite" />
 </FrameLayout>

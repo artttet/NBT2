@@ -36,20 +36,23 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.routesBnv:
                         transition(routesFragment);
-                        getSupportActionBar().setTitle("Маршруты");
                         return true;
                     case R.id.placesBnv:
                         transition(placesFragment);
-                        getSupportActionBar().setTitle("Места");
                         return true;
                     case R.id.mapBnv:
                         transition(mapFragment);
-                        getSupportActionBar().setTitle("Карта");
                         return true;
-                    case R.id.favoriteBnv:
-                        transition(frag4);
-                        getSupportActionBar().setTitle("Избранное");
-                        return true;
+                    //case R.id.favoriteBnv:
+                    //transition(frag4);
+                    //getSupportActionBar().setTitle("Избранное");
+                    //return true;
+
+                    //<item
+                    //        android:title="@string/favorite"
+                    //        android:id="@+id/favoriteBnv"
+                    //        android:icon="@drawable/ic_favorite_black_24dp"
+                    //         />
                 }
                 return false;
             }
@@ -62,13 +65,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
         routesFragment = new RoutesFragment();
         placesFragment = new PlacesFragment();
         mapFragment = new MapFragment();
         frag4 = new FavoritesFragment();
         bnvWork();
-        getSupportActionBar().setTitle("Маршруты");
         transition(routesFragment);
     }
 
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         trans.replace(R.id.for_fragment, fragment);
         trans.commit();
     }
+
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
