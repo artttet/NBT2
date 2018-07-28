@@ -83,6 +83,4 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
-
-
 }

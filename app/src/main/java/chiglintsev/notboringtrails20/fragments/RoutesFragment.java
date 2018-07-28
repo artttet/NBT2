@@ -26,7 +26,6 @@ public class RoutesFragment extends Fragment {
 
     private RoutesAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private Toolbar toolbar;
 
     //создание объектов для списка маршрутов
     private static List<Routes> routesList() {
@@ -63,9 +62,8 @@ public class RoutesFragment extends Fragment {
         //инициалицазия и заполнение списка
         recyclerWork();
 
-        toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Маршруты");
+        //инициализация тулбара
+        addToolbar(view);
 
     }
 
@@ -91,12 +89,10 @@ public class RoutesFragment extends Fragment {
         view.startAnimation(transition);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_search, menu);
-        menu.removeItem(R.id.action_search);
-        //searchView.setMenuItem(item);
-
+    private void addToolbar(View view){
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("Маршруты");
     }
+
 }

@@ -12,6 +12,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
+import chiglintsev.notboringtrails20.fragments.ObjectsFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
 
@@ -22,9 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private RoutesFragment routesFragment;
     private PlacesFragment placesFragment;
     private MapFragment mapFragment;
-    private FavoritesFragment frag4;
+    private FavoritesFragment favoritesFragment;
+    private ObjectsFragment objectsFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
-    private MaterialSearchView searchView;
 
 
     {
@@ -38,21 +39,13 @@ public class MainActivity extends AppCompatActivity {
                         transition(routesFragment);
                         return true;
                     case R.id.placesBnv:
-                        transition(placesFragment);
+                        transition(objectsFragment);
                         return true;
-                    case R.id.mapBnv:
-                        transition(mapFragment);
+                    case R.id.favoritesBnv:
+                        transition(favoritesFragment);
                         return true;
-                    //case R.id.favoriteBnv:
-                    //transition(frag4);
-                    //getSupportActionBar().setTitle("Избранное");
-                    //return true;
-
-                    //<item
-                    //        android:title="@string/favorite"
-                    //        android:id="@+id/favoriteBnv"
-                    //        android:icon="@drawable/ic_favorite_black_24dp"
-                    //         />
+                    case R.id.moreBnv:
+                        return true;
                 }
                 return false;
             }
@@ -68,9 +61,11 @@ public class MainActivity extends AppCompatActivity {
         routesFragment = new RoutesFragment();
         placesFragment = new PlacesFragment();
         mapFragment = new MapFragment();
-        frag4 = new FavoritesFragment();
+        favoritesFragment = new FavoritesFragment();
+        objectsFragment = new ObjectsFragment();
+
         bnvWork();
-        transition(routesFragment);
+        //transition(routesFragment);
     }
 
     @Override
@@ -88,51 +83,4 @@ public class MainActivity extends AppCompatActivity {
         trans.replace(R.id.for_fragment, fragment);
         trans.commit();
     }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_search, menu);
-//        MenuItem item = menu.findItem(R.id.action_search);
-//        searchView.setMenuItem(item);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-//    private void addSearch(){
-//        PlacesAdapter adapter = PlacesFragment
-//
-//        searchView = findViewById(R.id.search_view);
-//
-//        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                ArrayList<Places> result = new ArrayList<>();
-//                for(Places place: placesArrayList){
-//                    if(place.name.toLowerCase().contains(query.toLowerCase())){
-//                        result.add(place);
-//                    }
-//                }
-//                adapter.setList(result);
-//                searchView.hideKeyboard(searchView);
-//                searchView.clearFocus();
-//                return true;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                if(!newText.isEmpty()) {
-//                    ArrayList<Places> result = new ArrayList<>();
-//                    for (Places place : placesArrayList) {
-//                        if (place.name.toLowerCase().contains(newText.toLowerCase())) {
-//                            result.add(place);
-//                        }
-//                        adapter.setList(result);
-//                    }
-//                }else if(newText.isEmpty()){
-//                    adapter.setList(placesArrayList);
-//                }
-//                return false;
-//            }
-//        });
-//    }
 }

@@ -88,10 +88,10 @@ public class PlacesFragment extends Fragment {
         recyclerWork();
 
         //инициализация и работа с тулбаром
-        workWithToolbar(view);
+        //addToolbar(view);
 
         //работа с поиском
-        addSearch(view);
+        //addSearch(view);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class PlacesFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void workWithToolbar(View view){
+    private void addToolbar(View view){
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Места");
@@ -171,14 +171,6 @@ public class PlacesFragment extends Fragment {
         return (float) userLocation.distanceTo(placeLocation);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d("place2", "+++");
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
-    }
 
     private void addSearch(View view) {
         searchView = view.findViewById(R.id.search_view);

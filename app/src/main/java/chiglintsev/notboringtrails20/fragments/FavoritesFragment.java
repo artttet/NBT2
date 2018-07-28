@@ -3,9 +3,13 @@ package chiglintsev.notboringtrails20.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -25,11 +29,13 @@ public class FavoritesFragment extends Fragment {
 
     private PlacesAdapter adapter;
     private RecyclerView recyclerView;
+    private Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -43,6 +49,8 @@ public class FavoritesFragment extends Fragment {
 
         //иницализация recycler и подключение layoutmanager
         recyclerWork();
+
+        addToolbar(view);
     }
 
 
@@ -81,7 +89,7 @@ public class FavoritesFragment extends Fragment {
 
     private void animOpen() {
         Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View globalView = getView().findViewById(R.id.favorites);
+        View globalView = getView().findViewById(R.id.favorite_frame);
         globalView.startAnimation(transition);
     }
 
@@ -97,4 +105,15 @@ public class FavoritesFragment extends Fragment {
         }
     }
 
+    private void addToolbar(View view){
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("Маршруты");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_add, menu);
+    }
 }

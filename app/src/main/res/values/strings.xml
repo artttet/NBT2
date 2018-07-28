@@ -23,6 +23,8 @@
     <string name="on_map">На карте: </string>
     <string name="google_map_api_pc">AIzaSyBPKy5WjLXHz6kDd8GzYVvldDDxoe1RNi8</string>
     <string name="google_map_api_note">AIzaSyCzQCPYCHM7viL7JMbr3WUZDa8vVMaNuyQ</string>
+    <string name="google_map_api_noteZ">AIzaSyBQw7FPvaS5ne8aRUm94usmltDpYYgOG3Q</string>
     <string name="action_settings">Settings</string>
+    <string name="more">Ещё</string>
 
 </resources>
