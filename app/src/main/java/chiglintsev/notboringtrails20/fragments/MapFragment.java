@@ -112,6 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         myMap = googleMap;
 
         myMap.getUiSettings().setZoomControlsEnabled(true);
+        myMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         //Анимация камеры к центру города
         myMap.animateCamera(

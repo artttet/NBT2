@@ -6,17 +6,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -31,13 +26,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import chiglintsev.notboringtrails20.MainActivity;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.adapters.PlacesAdapter;
 import chiglintsev.notboringtrails20.models.Places;
 
 
 public class PlacesFragment extends Fragment {
-
+    private MainActivity mainActivity;
     public PlacesAdapter adapter;
     public ArrayList<Places> placesArrayList;
     private LinearLayoutManager linearLayoutManager;
@@ -62,6 +58,33 @@ public class PlacesFragment extends Fragment {
         }
     };
 
+    Animation translateMain,translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
+    View leftCard, rightCard, mainCard;
+
+    private void topBarOff() {
+        mainCard.setVisibility(View.GONE);
+        leftCard.setVisibility(View.GONE);
+        rightCard.setVisibility(View.GONE);
+    }
+
+    private void topBarOn() {
+        leftCard.setVisibility(View.VISIBLE);
+        rightCard.setVisibility(View.VISIBLE);
+        mainCard.setVisibility(View.VISIBLE);
+    }
+    public void topBarAnim() {
+        leftCard.startAnimation(translateLeft);
+        rightCard.startAnimation(translateRight);
+        mainCard.startAnimation(translateMain);
+        topBarOn();
+    }
+
+    public void topBarAnimRev() {
+        leftCard.startAnimation(translateLeftRev);
+        rightCard.startAnimation(translateRightRev);
+        mainCard.startAnimation(translateMainRev);
+        topBarOff();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +92,8 @@ public class PlacesFragment extends Fragment {
         setHasOptionsMenu(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         addLocations();
+
+        loadAnims();
     }
 
     @Override
@@ -87,11 +112,14 @@ public class PlacesFragment extends Fragment {
         //инициалицазия и заполнение списка
         recyclerWork();
 
+        mainCard = getActivity().findViewById(R.id.search_place);
+        leftCard = getActivity().findViewById(R.id.title_map_card);
+        rightCard = getActivity().findViewById(R.id.title_list_card);
         //инициализация и работа с тулбаром
         //addToolbar(view);
 
         //работа с поиском
-        //addSearch(view);
+        addSearch();
     }
 
     @Override
@@ -100,6 +128,15 @@ public class PlacesFragment extends Fragment {
 
         //animation for open fragment
         animOpen();
+    }
+
+    private void loadAnims() {
+        translateMain = AnimationUtils.loadAnimation(getContext(), R.anim.search_anim);
+        translateLeft = AnimationUtils.loadAnimation(getContext(), R.anim.title_map_card);
+        translateRight = AnimationUtils.loadAnimation(getContext(), R.anim.title_list_card);
+        translateMainRev = AnimationUtils.loadAnimation(getContext(), R.anim.search_anim_rev);
+        translateLeftRev = AnimationUtils.loadAnimation(getContext(), R.anim.title_map_card_rev);
+        translateRightRev = AnimationUtils.loadAnimation(getContext(), R.anim.title_list_card_rev);
     }
 
     private void animOpen() {
@@ -113,13 +150,36 @@ public class PlacesFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int check = 0;
+
+                if(dy > 0){
+                    if(mainCard.getVisibility() == View.VISIBLE){
+                        topBarAnimRev();
+                    }
+                }else if(dy < 0){
+                    if(mainCard.getVisibility() == View.GONE){
+                        topBarAnim();
+                    }
+                }
+
+
+
+//   > - rev | < - anim
+            }
+        });
     }
 
-    private void addToolbar(View view){
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Места");
-    }
+
 
     private void workWithList() {
         List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
@@ -172,8 +232,8 @@ public class PlacesFragment extends Fragment {
     }
 
 
-    private void addSearch(View view) {
-        searchView = view.findViewById(R.id.search_view);
+    private void addSearch() {
+        searchView = getActivity().findViewById(R.id.search);
 
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
@@ -192,6 +252,9 @@ public class PlacesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if(getActivity().findViewById(R.id.what).getVisibility() == View.VISIBLE){
+                    getActivity().findViewById(R.id.what).setVisibility(View.GONE);
+                }
                 if (!newText.isEmpty()) {
                     ArrayList<Places> result = new ArrayList<>();
                     for (Places place : placesArrayList) {
@@ -204,6 +267,29 @@ public class PlacesFragment extends Fragment {
                     adapter.setList(placesArrayList);
                 }
                 return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                getActivity().findViewById(R.id.search_icon).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.bnv).setVisibility(View.GONE);
+                leftCard.startAnimation(translateLeftRev);
+                leftCard.setVisibility(View.GONE);
+                rightCard.startAnimation(translateRightRev);
+                rightCard.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                getActivity().findViewById(R.id.what).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.search_icon).setVisibility(View.VISIBLE);
+                getActivity().findViewById(R.id.bnv).setVisibility(View.VISIBLE);
+                leftCard.startAnimation(translateLeft);
+                leftCard.setVisibility(View.VISIBLE);
+                rightCard.startAnimation(translateRight);
+                rightCard.setVisibility(View.VISIBLE);
             }
         });
     }

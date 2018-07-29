@@ -4,48 +4,22 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/places"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
 
-
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="top"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:minHeight="?attr/actionBarSize"-->
-            <!--android:theme="?attr/actionBarTheme"-->
-            <!--app:titleTextColor="@color/colorWhite">-->
-        <!--</android.support.v7.widget.Toolbar>-->
-
-        <com.miguelcatalan.materialsearchview.MaterialSearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Поиск..."
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            app:searchBackIcon="@drawable/ic_arrow_back_white_24dp"
-            app:searchBackground="@color/colorPrimary"
-            app:searchSuggestionBackground="@color/colorWhite" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_places"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="128dp"
             android:scrollbarSize="6dp"
             android:scrollbarStyle="outsideInset"
             android:scrollbarThumbVertical="@color/colorPrimaryDark"
             android:scrollbars="vertical" />
-    </LinearLayout>
 
 
 </FrameLayout>
