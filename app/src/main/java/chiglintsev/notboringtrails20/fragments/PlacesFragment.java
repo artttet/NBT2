@@ -26,19 +26,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import chiglintsev.notboringtrails20.MainActivity;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.adapters.PlacesAdapter;
 import chiglintsev.notboringtrails20.models.Places;
 
 
 public class PlacesFragment extends Fragment {
-    private MainActivity mainActivity;
     public PlacesAdapter adapter;
     public ArrayList<Places> placesArrayList;
     private LinearLayoutManager linearLayoutManager;
-    private MaterialSearchView searchView;
     private Location userLocation;
+    private int checkOpenSearch;
     private LocationListener locationListener = new LocationListener() {
 
         @Override
@@ -90,6 +88,7 @@ public class PlacesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        checkOpenSearch = 0;
         linearLayoutManager = new LinearLayoutManager(getActivity());
         addLocations();
 
@@ -115,11 +114,7 @@ public class PlacesFragment extends Fragment {
         mainCard = getActivity().findViewById(R.id.search_place);
         leftCard = getActivity().findViewById(R.id.title_map_card);
         rightCard = getActivity().findViewById(R.id.title_list_card);
-        //инициализация и работа с тулбаром
-        //addToolbar(view);
 
-        //работа с поиском
-        addSearch();
     }
 
     @Override
@@ -160,26 +155,23 @@ public class PlacesFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int check = 0;
 
-                if(dy > 0){
-                    if(mainCard.getVisibility() == View.VISIBLE){
-                        topBarAnimRev();
-                    }
-                }else if(dy < 0){
-                    if(mainCard.getVisibility() == View.GONE){
-                        topBarAnim();
+                if(checkOpenSearch == 0){
+                    if(dy > 10){
+                        if(mainCard.getVisibility() == View.VISIBLE){
+                            topBarAnimRev();
+                        }
+                    }else if(dy < -10 ){
+                        if(mainCard.getVisibility() == View.GONE){
+                            topBarAnim();
+                        }
                     }
                 }
-
-
 
 //   > - rev | < - anim
             }
         });
     }
-
-
 
     private void workWithList() {
         List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
@@ -217,10 +209,11 @@ public class PlacesFragment extends Fragment {
                 );
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 14);
-        }
-        userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (userLocation == null) {
-            userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }else{
+            userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (userLocation == null) {
+                userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
         }
     }
 
@@ -232,10 +225,12 @@ public class PlacesFragment extends Fragment {
     }
 
 
-    private void addSearch() {
-        searchView = getActivity().findViewById(R.id.search);
+    public void placesSearch(final MaterialSearchView msv) {
+        msv.showSearch();
 
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+
+
+        msv.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ArrayList<Places> result = new ArrayList<>();
@@ -245,13 +240,14 @@ public class PlacesFragment extends Fragment {
                     }
                 }
                 adapter.setList(result);
-                searchView.hideKeyboard(searchView);
-                searchView.clearFocus();
+                msv.hideKeyboard(msv);
+                msv.clearFocus();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 if(getActivity().findViewById(R.id.what).getVisibility() == View.VISIBLE){
                     getActivity().findViewById(R.id.what).setVisibility(View.GONE);
                 }
@@ -270,9 +266,10 @@ public class PlacesFragment extends Fragment {
             }
         });
 
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+        msv.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
+                checkOpenSearch = 1;
                 getActivity().findViewById(R.id.search_icon).setVisibility(View.GONE);
                 getActivity().findViewById(R.id.bnv).setVisibility(View.GONE);
                 leftCard.startAnimation(translateLeftRev);
@@ -283,6 +280,7 @@ public class PlacesFragment extends Fragment {
 
             @Override
             public void onSearchViewClosed() {
+                checkOpenSearch = 0;
                 getActivity().findViewById(R.id.what).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.search_icon).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.bnv).setVisibility(View.VISIBLE);

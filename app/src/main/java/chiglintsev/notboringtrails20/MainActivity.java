@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -26,11 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView what;
     public FragmentTransaction trans;
     private Animation translateMain, translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
-    private int fragementCheck;
-    private ImageView searchIcon;
+    private int fragmentCheck;
     private BottomNavigationView bottomNavigation;
     private MaterialSearchView msv;
-    private View searchView, leftCard, rightCard;
+    private View mainCard, leftCard, rightCard;
     private RoutesFragment routesFragment;
     private PlacesFragment placesFragment;
     private MapFragment mapFragment;
@@ -49,15 +47,15 @@ public class MainActivity extends AppCompatActivity {
                         topBarOff();
                         return true;
                     case R.id.placesBnv:
-                        if (fragementCheck == 0) {
+                        if (fragmentCheck == 0) {
                             transition(mapFragment);
                         } else {
                             transition(placesFragment);
                         }
 
                         if (bottomNavigation.getSelectedItemId() != R.id.placesBnv) {
-                            searchIcon = findViewById(R.id.search_icon);
-                            searchView.setVisibility(View.VISIBLE);
+
+                            mainCard.setVisibility(View.VISIBLE);
                             leftCard.setVisibility(View.VISIBLE);
                             rightCard.setVisibility(View.VISIBLE);
                             topBarAnim();
@@ -84,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
         loadAnims();
 
-        fragementCheck = 0;
-        searchView = findViewById(R.id.search_place);
+        fragmentCheck = 0;
+        mainCard = findViewById(R.id.search_place);
         leftCard = findViewById(R.id.title_map_card);
         rightCard = findViewById(R.id.title_list_card);
         what = findViewById(R.id.what);
@@ -119,11 +117,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openSearch(View view) {
-        msv.showSearch();
+        if(fragmentCheck == 0){
+            mapFragment.mapSearch(msv);
+        }else if(fragmentCheck == 1){
+            placesFragment.placesSearch(msv);
+        }
     }
 
     private void topBarOff() {
-        searchView.setVisibility(View.GONE);
+        mainCard.setVisibility(View.GONE);
         leftCard.setVisibility(View.GONE);
         rightCard.setVisibility(View.GONE);
     }
@@ -131,18 +133,18 @@ public class MainActivity extends AppCompatActivity {
     private void topBarOn() {
         leftCard.setVisibility(View.VISIBLE);
         rightCard.setVisibility(View.VISIBLE);
-        searchView.setVisibility(View.VISIBLE);
+        mainCard.setVisibility(View.VISIBLE);
     }
 
     public void getMapFragment(View view) {
-        fragementCheck = 0;
+        fragmentCheck = 0;
         trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.for_fragment, mapFragment);
         trans.commit();
     }
 
     public void getPlacesFragment(View view) {
-        fragementCheck = 1;
+        fragmentCheck = 1;
         trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.for_fragment, placesFragment);
         trans.commit();
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     public void topBarAnim() {
         leftCard.startAnimation(translateLeft);
         rightCard.startAnimation(translateRight);
-        searchView.startAnimation(translateMain);
+        mainCard.startAnimation(translateMain);
         topBarOn();
     }
 

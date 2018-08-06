@@ -2,6 +2,7 @@ package chiglintsev.notboringtrails20.fragments;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
@@ -23,10 +24,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap myMap;
     private LocationManager locationManager;
     private CameraPosition restorePosition;
-
+    private View searchPlace;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         //fragment for GoogleMap
         addMFragment();
+
+        searchPlace = getView().findViewById(R.id.search_list);
     }
 
     @Override
@@ -172,20 +177,56 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void loadObjects() {
-        List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
+        List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng", "category")
                 .from(Places.class)
                 .execute();
         placesArrayList = new ArrayList<>();
         placesArrayList.addAll(placesList);
     }
 
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
     private void addMarkers() {
         for (final Places place : placesArrayList) {
-            myMap.addMarker(
-                    new MarkerOptions().position(
-                            new LatLng(place.lat, place.lng)
-                    )
-            );
+            if(place.category == 0){
+                myMap.addMarker(
+                        new MarkerOptions().position(
+                                new LatLng(place.lat, place.lng)
+                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vectorpaint", 104,104)))
+                );
+            } else if(place.category == 1){
+                myMap.addMarker(
+                        new MarkerOptions().position(
+                                new LatLng(place.lat, place.lng)
+                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("sculpture2", 48,48)))
+                );
+            } else if(place.category == 2){
+                myMap.addMarker(
+                        new MarkerOptions().position(
+                                new LatLng(place.lat, place.lng)
+                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("church2", 104,104)))
+
+                );
+            } else if(place.category == 3){
+                myMap.addMarker(
+                        new MarkerOptions().position(
+                                new LatLng(place.lat, place.lng)
+                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("museum2", 104,104)))
+
+                );
+            } else if(place.category == 4){
+                myMap.addMarker(
+                        new MarkerOptions().position(
+                                new LatLng(place.lat, place.lng)
+                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("theatr2", 104,104)))
+
+                );
+            }
+
         }
 
         myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -232,6 +273,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 startActivity(intent);
             }
         });
+    }
+
+    public void mapSearch(MaterialSearchView msv){
+        msv.showSearch();
+
+        msv.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                Animation shadow = AnimationUtils.loadAnimation(getActivity(), R.anim.shadow);
+                searchPlace.startAnimation(shadow);
+                searchPlace.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                searchPlace.setVisibility(View.GONE);
+            }
+        });
+
+
+
+
     }
 }
 

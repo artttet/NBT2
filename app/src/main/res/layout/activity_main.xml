@@ -117,10 +117,10 @@
         style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemHorizontalTranslationEnabled="true"
+        app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@drawable/bnv_colors"
         app:itemTextColor="@drawable/bnv_colors"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/menu_bnv" />
 

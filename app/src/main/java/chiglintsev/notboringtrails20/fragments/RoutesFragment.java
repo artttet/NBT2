@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -33,10 +31,10 @@ public class RoutesFragment extends Fragment {
         list.add(new Routes(0, "Вдоль по Любинскому", R.drawable.route1));
         list.add(new Routes(1, "Пешком до Питера", R.drawable.route2));
         list.add(new Routes(2, "По Омску с европейцами", R.drawable.route3));
-        list.add(new Routes(3, "\"Вылитый\" омск", R.drawable.route4));
+        list.add(new Routes(3, "«Вылитый» омск", R.drawable.route4));
         list.add(new Routes(4, "Две крепости", R.drawable.route5));
         list.add(new Routes(5, "Соборное кольцо", R.drawable.route6));
-        list.add(new Routes(6, "Вокруг \"Кадетки\"", R.drawable.route77));
+        list.add(new Routes(6, "Вокруг «Кадетки»", R.drawable.route77));
         return list;
     }
 

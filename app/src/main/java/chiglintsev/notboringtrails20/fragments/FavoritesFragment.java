@@ -108,7 +108,7 @@ public class FavoritesFragment extends Fragment {
     private void addToolbar(View view){
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        toolbar.setTitle("Маршруты");
+        toolbar.setTitle("Избранное");
     }
 
     @Override

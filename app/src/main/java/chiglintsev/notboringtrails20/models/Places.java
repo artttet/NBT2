@@ -29,6 +29,8 @@ public class Places extends Model {
     public int check_favorite;
     @Column(name = "Id")
     public long id;
+    @Column(name = "category")
+    public int category;
 
     public Places() {
         super();
