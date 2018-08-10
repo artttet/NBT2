@@ -24,7 +24,7 @@
         android:layout_gravity="center"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorOpacity"
         android:onClick="openSearch"
         android:visibility="gone"

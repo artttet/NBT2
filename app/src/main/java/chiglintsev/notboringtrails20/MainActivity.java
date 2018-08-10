@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -18,6 +19,8 @@ import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
+import chiglintsev.notboringtrails20.fragments.SearchListFragment;
+import chiglintsev.notboringtrails20.models.Places;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private PlacesFragment placesFragment;
     private MapFragment mapFragment;
     private FavoritesFragment favoritesFragment;
+    private SearchListFragment searchListFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
+    public boolean checkMarker = false;
 
     {
         onNavigation = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,12 +59,15 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (bottomNavigation.getSelectedItemId() != R.id.placesBnv) {
-
                             mainCard.setVisibility(View.VISIBLE);
-                            leftCard.setVisibility(View.VISIBLE);
-                            rightCard.setVisibility(View.VISIBLE);
+                            if(!checkMarker){
+                                leftCard.setVisibility(View.VISIBLE);
+                                rightCard.setVisibility(View.VISIBLE);
+                            }
                             topBarAnim();
                         }
+
+
                         return true;
                     case R.id.favoritesBnv:
                         transition(favoritesFragment);
@@ -91,12 +99,14 @@ public class MainActivity extends AppCompatActivity {
         placesFragment = new PlacesFragment();
         mapFragment = new MapFragment();
         favoritesFragment = new FavoritesFragment();
+        searchListFragment = new SearchListFragment();
 
         bnvWork();
         //transition(routesFragment);
         msv = findViewById(R.id.search);
 
         transition(routesFragment);
+
     }
 
     @Override
@@ -109,17 +119,29 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnNavigationItemSelectedListener(onNavigation);
     }
 
-    private void transition(Fragment fragment) {
+    public void transition(Fragment fragment) {
         trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.for_fragment, fragment);
         trans.commit();
     }
 
-
     public void openSearch(View view) {
+
         if(fragmentCheck == 0){
-            mapFragment.mapSearch(msv);
+            what.setText("Что вы ищете?");
+
+            if(mapFragment.checkCategory != -1){
+                mapFragment.addCategory(-1);
+            }
+            transition(searchListFragment);
+            searchListFragment.mapSearch(msv);
+            if(checkMarker){
+                what.setVisibility(View.INVISIBLE);
+                checkMarker = false;
+                mapFragment.setCheckMarker(false);
+            }
         }else if(fragmentCheck == 1){
+            what.setText("Что вы ищете?");
             placesFragment.placesSearch(msv);
         }
     }
@@ -151,8 +173,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void topBarAnim() {
-        leftCard.startAnimation(translateLeft);
-        rightCard.startAnimation(translateRight);
+        if(!checkMarker){
+            leftCard.startAnimation(translateLeft);
+            rightCard.startAnimation(translateRight);
+        }
         mainCard.startAnimation(translateMain);
         topBarOn();
     }
@@ -170,4 +194,33 @@ public class MainActivity extends AppCompatActivity {
             msv.closeSearch();
         }else super.onBackPressed();
     }
+
+    public MapFragment getFragment(){
+        return this.mapFragment;
+    }
+
+    public void getMapFragment(int category){
+        fragmentCheck = 0;
+        mapFragment.addCategory(category);
+        checkMarker = true;
+        mapFragment.setCheckMarker(true);
+        trans = getSupportFragmentManager().beginTransaction();
+        trans.replace(R.id.for_fragment, mapFragment);
+        trans.commit();
+    }
+
+    public void msvClose(String name){
+        leftCard.setVisibility(View.INVISIBLE);
+        rightCard.setVisibility(View.INVISIBLE);
+        msv.closeSearch();
+        what.setText(name);
+        searchListFragment.addQuery(userQuery);
+        Log.d("place", "from MainActivity --- " + userQuery);
+    }
+
+    public void getMarker(Places place){
+        mapFragment.showMarker(place);
+    }
+
+    public String userQuery;
 }

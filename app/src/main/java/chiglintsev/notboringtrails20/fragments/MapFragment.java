@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -27,9 +28,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int PERMISSION_CODE = 14;
     private final static String KEY_FOR_PLACE_id = "id_key";
+    public int checkCategory = -1;
+    MyAsyncTask asyncTask;
+    Places searchPlace = null;
+    boolean checkMarker = false;
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -68,13 +73,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap myMap;
     private LocationManager locationManager;
     private CameraPosition restorePosition;
-    private View searchPlace;
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
+        asyncTask = new MyAsyncTask();
         //Запрос в БД за местами
         loadObjects();
     }
@@ -91,7 +98,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //fragment for GoogleMap
         addMFragment();
 
-        searchPlace = getView().findViewById(R.id.search_list);
+        if(checkCategory != -1){
+            getActivity().findViewById(R.id.title_map_card).setVisibility(View.GONE);
+            getActivity().findViewById(R.id.title_list_card).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -100,6 +110,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         //animation for open fragment
         animOpen();
+
+
     }
 
     @Override
@@ -110,24 +122,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } catch (NullPointerException e) {
 
         }
+        asyncTask.cancel(true);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         myMap = googleMap;
+        myMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+
+        //Анимация камеры к центру города
+
+
+        if (checkCategory == -1) {
+            asyncTask.execute();
+        } else if (checkCategory > -1) {
+            addMarkers(checkCategory);
+        }
+
+        if (checkCategory == -2) {
+            myMap.addMarker(new MarkerOptions().position(new LatLng(searchPlace.lat, searchPlace.lng)));
+            if(checkMarker){
+                myMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(searchPlace.lat, searchPlace.lng), 16
+                        ));
+                checkMarker = false;
+            }else {
+                myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+            }
+        }
 
         myMap.getUiSettings().setZoomControlsEnabled(true);
         myMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        //Анимация камеры к центру города
-        myMap.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(54.974895, 73.368213), 11
-                )
-        );
 
         //добавляет маркеры с infoWindow и слушателем на них
-        addMarkers();
+        //addMarkers();
 
         if (ContextCompat.checkSelfPermission(
                 getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -147,15 +177,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 try {
                     LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-
-                    myMap.animateCamera(
+                    if (checkCategory == -1) myMap.animateCamera(
                             CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null
                     );
+
                 } catch (NullPointerException e) {
                 }
 
-            } else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+            } else if (restorePosition != null && checkCategory == -1)
+                myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
         }
+
+
     }
 
     @Override
@@ -166,7 +199,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void animOpen() {
         Animation transition = AnimationUtils.loadAnimation(getActivity(), R.anim.transition);
-        View view = getView().findViewById(R.id.map);
+        View view = getActivity().findViewById(R.id.for_fragment);
         view.startAnimation(transition);
     }
 
@@ -184,59 +217,59 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         placesArrayList.addAll(placesList);
     }
 
-    public Bitmap resizeMapIcons(String iconName, int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
         return resizedBitmap;
     }
 
-    private void addMarkers() {
+    public void addCategory(int category) {
+        checkCategory = category;
+    }
+
+    public void setCheckMarker(boolean b){
+        checkMarker = b;
+    }
+
+    public boolean getCheckMarker(){
+        return checkMarker;
+    }
+
+    public void showMarker(Places place) {
+        myMap.clear();
+        searchPlace = place;
+    }
+
+
+
+    private void addMarkers(int category) {
+
+
+        if(checkMarker){
+            myMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(54.974895, 73.368213), 13
+                    ));
+            checkMarker = false;
+        }else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+
+
         for (final Places place : placesArrayList) {
-            if(place.category == 0){
-                myMap.addMarker(
-                        new MarkerOptions().position(
-                                new LatLng(place.lat, place.lng)
-                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vectorpaint", 104,104)))
-                );
-            } else if(place.category == 1){
-                myMap.addMarker(
-                        new MarkerOptions().position(
-                                new LatLng(place.lat, place.lng)
-                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("sculpture2", 48,48)))
-                );
-            } else if(place.category == 2){
-                myMap.addMarker(
-                        new MarkerOptions().position(
-                                new LatLng(place.lat, place.lng)
-                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("church2", 104,104)))
-
-                );
-            } else if(place.category == 3){
-                myMap.addMarker(
-                        new MarkerOptions().position(
-                                new LatLng(place.lat, place.lng)
-                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("museum2", 104,104)))
-
-                );
-            } else if(place.category == 4){
-                myMap.addMarker(
-                        new MarkerOptions().position(
-                                new LatLng(place.lat, place.lng)
-                        ).icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("theatr2", 104,104)))
-
-                );
+            if (place.category == category) {
+                myMap.addMarker(new MarkerOptions().position(new LatLng(place.lat, place.lng)).title(place.name));
             }
-
         }
 
         myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
 
-                int markerId = Integer.parseInt(
-                        marker.getId().substring(1)
-                );
-                Places place = placesArrayList.get(markerId);
+                String title = marker.getTitle();
+                Places place = new Select("Id", "name", "image_name")
+                        .from(Places.class)
+                        .where("name = ?", title)
+                        .executeSingle();
+
 
                 View view = getLayoutInflater().inflate(R.layout.map_card, null);
                 TextView tv = view.findViewById(R.id.name_map_card);
@@ -257,6 +290,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 return view;
             }
 
+
             @Override
             public View getInfoContents(Marker marker) {
                 return null;
@@ -266,35 +300,131 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                int markerId = Integer.parseInt(marker.getId().substring(1));
-                Places place = placesArrayList.get(markerId);
+                Places place = new Select("Id", "name")
+                        .from(Places.class)
+                        .where("name = ?", marker.getTitle())
+                        .executeSingle();
                 Intent intent = new Intent(getActivity(), PlaceActivity2.class);
                 intent.putExtra(KEY_FOR_PLACE_id, place.id);
                 startActivity(intent);
             }
         });
+
     }
 
-    public void mapSearch(MaterialSearchView msv){
-        msv.showSearch();
+    private class MyAsyncTask extends AsyncTask<GoogleMap, MarkerOptions, GoogleMap> {
 
-        msv.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                Animation shadow = AnimationUtils.loadAnimation(getActivity(), R.anim.shadow);
-                searchPlace.startAnimation(shadow);
-                searchPlace.setVisibility(View.VISIBLE);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected GoogleMap doInBackground(GoogleMap... googleMaps) {
+            for (final Places place : placesArrayList) {
+                if (place.category == 0) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(place.lat, place.lng))
+                            .icon(
+                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vectorpaint", 96, 96))
+                            )
+                            .title(place.name);
+                    publishProgress(markerOptions);
+                    continue;
+                } else if (place.category == 1) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(place.lat, place.lng))
+                            .icon(
+                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("sculpture2", 48, 48))
+                            )
+                            .title(place.name);
+                    publishProgress(markerOptions);
+                    continue;
+                } else if (place.category == 2) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(place.lat, place.lng))
+                            .icon(
+                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("church2", 96, 96))
+                            )
+                            .title(place.name);
+                    publishProgress(markerOptions);
+                    continue;
+                } else if (place.category == 3) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(place.lat, place.lng))
+                            .icon(
+                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("museum2", 96, 96))
+                            )
+                            .title(place.name);
+                    publishProgress(markerOptions);
+                    continue;
+                } else if (place.category == 4) {
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(new LatLng(place.lat, place.lng))
+                            .icon(
+                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("theatr2", 96, 96))
+                            )
+                            .title(place.name);
+                    publishProgress(markerOptions);
+                    continue;
+                }
             }
-
-            @Override
-            public void onSearchViewClosed() {
-                searchPlace.setVisibility(View.GONE);
-            }
-        });
+            return null;
+        }
 
 
+        @Override
+        protected void onProgressUpdate(MarkerOptions... values) {
+            super.onProgressUpdate(values);
+
+            myMap.addMarker(values[0]);
 
 
+            myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+
+                    int markerId = Integer.parseInt(
+                            marker.getId().substring(1)
+                    );
+                    Places place = placesArrayList.get(markerId);
+
+                    View view = getLayoutInflater().inflate(R.layout.map_card, null);
+                    TextView tv = view.findViewById(R.id.name_map_card);
+                    ImageView iv = view.findViewById(R.id.img_map_card);
+
+                    tv.setText(place.name);
+                    tv.setTypeface(
+                            SingletonFonts.getInstance(getContext())
+                                    .getFont1()
+                    );
+                    iv.setImageBitmap(
+                            BitmapFactory.decodeResource(
+                                    view.getResources(), getResources().getIdentifier(
+                                            place.img_name, "drawable", getActivity().getPackageName()
+                                    )
+                            )
+                    );
+                    return view;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    return null;
+                }
+            });
+
+            myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    int markerId = Integer.parseInt(marker.getId().substring(1));
+                    Places place = placesArrayList.get(markerId);
+                    Intent intent = new Intent(getActivity(), PlaceActivity2.class);
+                    intent.putExtra(KEY_FOR_PLACE_id, place.id);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 }
 

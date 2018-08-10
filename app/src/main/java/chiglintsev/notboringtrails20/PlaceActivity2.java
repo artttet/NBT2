@@ -16,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import chiglintsev.notboringtrails20.models.Places;
@@ -129,5 +130,7 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.addMarker(new MarkerOptions().position(position));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style));
+
     }
 }

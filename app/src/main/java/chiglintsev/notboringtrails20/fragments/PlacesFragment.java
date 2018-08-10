@@ -34,6 +34,8 @@ import chiglintsev.notboringtrails20.models.Places;
 public class PlacesFragment extends Fragment {
     public PlacesAdapter adapter;
     public ArrayList<Places> placesArrayList;
+    private Animation translateMain, translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
+    private View leftCard, rightCard, mainCard;
     private LinearLayoutManager linearLayoutManager;
     private Location userLocation;
     private int checkOpenSearch;
@@ -56,8 +58,6 @@ public class PlacesFragment extends Fragment {
         }
     };
 
-    Animation translateMain,translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
-    View leftCard, rightCard, mainCard;
 
     private void topBarOff() {
         mainCard.setVisibility(View.GONE);
@@ -70,6 +70,7 @@ public class PlacesFragment extends Fragment {
         rightCard.setVisibility(View.VISIBLE);
         mainCard.setVisibility(View.VISIBLE);
     }
+
     public void topBarAnim() {
         leftCard.startAnimation(translateLeft);
         rightCard.startAnimation(translateRight);
@@ -83,6 +84,7 @@ public class PlacesFragment extends Fragment {
         mainCard.startAnimation(translateMainRev);
         topBarOff();
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,13 +158,13 @@ public class PlacesFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                if(checkOpenSearch == 0){
-                    if(dy > 10){
-                        if(mainCard.getVisibility() == View.VISIBLE){
+                if (checkOpenSearch == 0) {
+                    if (dy > 10) {
+                        if (mainCard.getVisibility() == View.VISIBLE) {
                             topBarAnimRev();
                         }
-                    }else if(dy < -10 ){
-                        if(mainCard.getVisibility() == View.GONE){
+                    } else if (dy < -10) {
+                        if (mainCard.getVisibility() == View.GONE) {
                             topBarAnim();
                         }
                     }
@@ -209,7 +211,7 @@ public class PlacesFragment extends Fragment {
                 );
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 14);
-        }else{
+        } else {
             userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (userLocation == null) {
                 userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -227,7 +229,6 @@ public class PlacesFragment extends Fragment {
 
     public void placesSearch(final MaterialSearchView msv) {
         msv.showSearch();
-
 
 
         msv.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
@@ -248,7 +249,7 @@ public class PlacesFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                if(getActivity().findViewById(R.id.what).getVisibility() == View.VISIBLE){
+                if (getActivity().findViewById(R.id.what).getVisibility() == View.VISIBLE) {
                     getActivity().findViewById(R.id.what).setVisibility(View.GONE);
                 }
                 if (!newText.isEmpty()) {
@@ -260,6 +261,7 @@ public class PlacesFragment extends Fragment {
                         adapter.setList(result);
                     }
                 } else if (newText.isEmpty()) {
+                    getActivity().findViewById(R.id.what).setVisibility(View.VISIBLE);
                     adapter.setList(placesArrayList);
                 }
                 return false;
