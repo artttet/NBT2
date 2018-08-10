@@ -130,17 +130,66 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         myMap = googleMap;
         myMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
 
-        //Анимация камеры к центру города
-
-
         if (checkCategory == -1) {
             asyncTask.execute();
-        } else if (checkCategory > -1) {
+        } else if (checkCategory > -1){
             addMarkers(checkCategory);
         }
 
         if (checkCategory == -2) {
-            myMap.addMarker(new MarkerOptions().position(new LatLng(searchPlace.lat, searchPlace.lng)));
+            myMap.addMarker(new MarkerOptions().position(new LatLng(searchPlace.lat, searchPlace.lng)).title(searchPlace.name));
+
+            //infoWindow and listener
+            myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+
+                    String title = marker.getTitle();
+                    Places place = new Select("Id", "name", "image_name")
+                            .from(Places.class)
+                            .where("name = ?", title)
+                            .executeSingle();
+
+
+                    View view = getLayoutInflater().inflate(R.layout.map_card, null);
+                    TextView tv = view.findViewById(R.id.name_map_card);
+                    ImageView iv = view.findViewById(R.id.img_map_card);
+
+                    tv.setText(place.name);
+                    tv.setTypeface(
+                            SingletonFonts.getInstance(getContext())
+                                    .getFont1()
+                    );
+                    iv.setImageBitmap(
+                            BitmapFactory.decodeResource(
+                                    view.getResources(), getResources().getIdentifier(
+                                            place.img_name, "drawable", getActivity().getPackageName()
+                                    )
+                            )
+                    );
+                    return view;
+                }
+
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    return null;
+                }
+            });
+
+            myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    Places place = new Select("Id", "name")
+                            .from(Places.class)
+                            .where("name = ?", marker.getTitle())
+                            .executeSingle();
+                    Intent intent = new Intent(getActivity(), PlaceActivity2.class);
+                    intent.putExtra(KEY_FOR_PLACE_id, place.id);
+                    startActivity(intent);
+                }
+            });
+
             if(checkMarker){
                 myMap.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
@@ -154,10 +203,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         myMap.getUiSettings().setZoomControlsEnabled(true);
         myMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-
-        //добавляет маркеры с infoWindow и слушателем на них
-        //addMarkers();
 
         if (ContextCompat.checkSelfPermission(
                 getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -231,20 +276,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         checkMarker = b;
     }
 
-    public boolean getCheckMarker(){
-        return checkMarker;
-    }
-
     public void showMarker(Places place) {
         myMap.clear();
         searchPlace = place;
     }
 
-
-
     private void addMarkers(int category) {
-
-
         if(checkMarker){
             myMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
@@ -260,6 +297,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
+        //infoWindow and listener
         myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -312,6 +350,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    //Task for markers
     private class MyAsyncTask extends AsyncTask<GoogleMap, MarkerOptions, GoogleMap> {
 
         @Override
