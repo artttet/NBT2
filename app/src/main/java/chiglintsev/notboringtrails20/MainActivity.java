@@ -17,6 +17,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import chiglintsev.notboringtrails20.fragments.FavoritesFragment;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
+import chiglintsev.notboringtrails20.fragments.MoreFragment;
 import chiglintsev.notboringtrails20.fragments.PlacesFragment;
 import chiglintsev.notboringtrails20.fragments.RoutesFragment;
 import chiglintsev.notboringtrails20.fragments.SearchListFragment;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment;
     private FavoritesFragment favoritesFragment;
     private SearchListFragment searchListFragment;
+    private MoreFragment moreFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
     public boolean checkMarker = false;
 
@@ -74,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                         topBarOff();
                         return true;
                     case R.id.moreBnv:
+                        transition(moreFragment);
+                        topBarOff();
                         return true;
                 }
                 return false;
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         favoritesFragment = new FavoritesFragment();
         searchListFragment = new SearchListFragment();
+        moreFragment = new MoreFragment();
 
         bnvWork();
         //transition(routesFragment);
@@ -110,8 +115,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onPostResume() {
+        super.onPostResume();
+        bottomNavigation.setSelectedItemId(0);
     }
 
     private void bnvWork() {

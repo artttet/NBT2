@@ -197,7 +197,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         ));
                 checkMarker = false;
             }else {
-                myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
+                myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(54.974895, 73.368213), 13)
+                );
             }
         }
 

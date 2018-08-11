@@ -162,7 +162,8 @@
                 app:layout_constraintTop_toBottomOf="@id/address"
                 map:cameraZoom="16.5"
                 map:liteMode="true"
-                tools:context=".PlaceActivity2" />
+                tools:context=".PlaceActivity2"
+                />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

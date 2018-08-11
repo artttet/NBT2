@@ -157,15 +157,18 @@ public class SearchListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("place", "newText --- " + newText);
+
                 try {
                     if (getActivity().findViewById(R.id.what).getVisibility() == View.VISIBLE) {
                         getActivity().findViewById(R.id.what).setVisibility(View.INVISIBLE);
                     }
-                } catch (NullPointerException e) {
-                }
+                } catch (NullPointerException e) {}
+
                 if (!newText.isEmpty()) {
-                    Log.d("place", "newTest.isEmpty(no)" + adapter);
+
+                    try {
+                        ((MainActivity) getActivity()).userQuery = newText;
+                    } catch (NullPointerException e) {}
 
                     recyclerView.setAdapter(adapter);
                     ArrayList<Places> result = new ArrayList<>();
@@ -175,21 +178,21 @@ public class SearchListFragment extends Fragment {
                         }
                     }
                     adapter.setList(result);
-                    Log.d("place", String.valueOf(adapter));
-                    try {
-                        ((MainActivity) getActivity()).userQuery = newText;
-                    } catch (NullPointerException e) {
-                    }
+
+
+
                 } else if (newText.isEmpty()) {
                     recyclerView.setAdapter(cAdapter);
+
                     try {
                         getActivity().findViewById(R.id.what).setVisibility(View.VISIBLE);
-                    } catch (NullPointerException e) {
-                    }
-
+                    } catch (NullPointerException e) {}
                 }
+
+
                 return false;
             }
+
         });
 
 
