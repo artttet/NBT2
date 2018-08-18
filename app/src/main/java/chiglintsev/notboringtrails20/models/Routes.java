@@ -3,7 +3,7 @@ package chiglintsev.notboringtrails20.models;
 public class Routes {
     public String title;
     public int img;
-    int id;
+    public int id;
 
     public Routes(int id, String title, int img) {
         this.id = id;

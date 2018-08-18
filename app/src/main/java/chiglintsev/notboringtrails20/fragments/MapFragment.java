@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -31,10 +32,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.ui.IconGenerator;
+import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import chiglintsev.notboringtrails20.MainActivity;
 import chiglintsev.notboringtrails20.PlaceActivity2;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.SingletonFonts;
@@ -48,9 +53,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int PERMISSION_CODE = 14;
     private final static String KEY_FOR_PLACE_id = "id_key";
     public int checkCategory = -1;
+    private SVG svg;
     MyAsyncTask asyncTask;
     Places searchPlace = null;
     boolean checkMarker = false;
+    Drawable drawable;
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -75,7 +82,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private CameraPosition restorePosition;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +90,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         asyncTask = new MyAsyncTask();
         //Запрос в БД за местами
         loadObjects();
+
+
     }
 
     @Override
@@ -98,9 +106,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         //fragment for GoogleMap
         addMFragment();
 
-        if(checkCategory != -1){
+        if (checkCategory != -1) {
             getActivity().findViewById(R.id.title_map_card).setVisibility(View.GONE);
             getActivity().findViewById(R.id.title_list_card).setVisibility(View.GONE);
+        }
+
+        if (!((MainActivity) getActivity()).checkMarker) {
+            ((MainActivity) getActivity()).findViewById(R.id.title_map_card).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.title_list_card).setVisibility(View.VISIBLE);
         }
     }
 
@@ -129,82 +142,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         myMap = googleMap;
         myMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
+        myMap.getUiSettings().setZoomControlsEnabled(true);
+        myMap.getUiSettings().setMyLocationButtonEnabled(false);
+        myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(54.974895, 73.368213), 13)
+        );
 
         if (checkCategory == -1) {
             asyncTask.execute();
-        } else if (checkCategory > -1){
+        } else if (checkCategory > -1) {
             addMarkers(checkCategory);
         }
 
         if (checkCategory == -2) {
             myMap.addMarker(new MarkerOptions().position(new LatLng(searchPlace.lat, searchPlace.lng)).title(searchPlace.name));
 
-            //infoWindow and listener
-            myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                @Override
-                public View getInfoWindow(Marker marker) {
+            addInfoWindow();
 
-                    String title = marker.getTitle();
-                    Places place = new Select("Id", "name", "image_name")
-                            .from(Places.class)
-                            .where("name = ?", title)
-                            .executeSingle();
-
-
-                    View view = getLayoutInflater().inflate(R.layout.map_card, null);
-                    TextView tv = view.findViewById(R.id.name_map_card);
-                    ImageView iv = view.findViewById(R.id.img_map_card);
-
-                    tv.setText(place.name);
-                    tv.setTypeface(
-                            SingletonFonts.getInstance(getContext())
-                                    .getFont1()
-                    );
-                    iv.setImageBitmap(
-                            BitmapFactory.decodeResource(
-                                    view.getResources(), getResources().getIdentifier(
-                                            place.img_name, "drawable", getActivity().getPackageName()
-                                    )
-                            )
-                    );
-                    return view;
-                }
-
-
-                @Override
-                public View getInfoContents(Marker marker) {
-                    return null;
-                }
-            });
-
-            myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    Places place = new Select("Id", "name")
-                            .from(Places.class)
-                            .where("name = ?", marker.getTitle())
-                            .executeSingle();
-                    Intent intent = new Intent(getActivity(), PlaceActivity2.class);
-                    intent.putExtra(KEY_FOR_PLACE_id, place.id);
-                    startActivity(intent);
-                }
-            });
-
-            if(checkMarker){
+            if (checkMarker) {
                 myMap.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(searchPlace.lat, searchPlace.lng), 16
                         ));
                 checkMarker = false;
-            }else {
+            } else {
                 myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(54.974895, 73.368213), 13)
                 );
             }
         }
 
-        myMap.getUiSettings().setZoomControlsEnabled(true);
-        myMap.getUiSettings().setMyLocationButtonEnabled(false);
 
         if (ContextCompat.checkSelfPermission(
                 getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -264,17 +231,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         placesArrayList.addAll(placesList);
     }
 
-    public Bitmap resizeMapIcons(String iconName, int width, int height) {
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return resizedBitmap;
-    }
-
     public void addCategory(int category) {
         checkCategory = category;
     }
 
-    public void setCheckMarker(boolean b){
+    public void setCheckMarker(boolean b) {
         checkMarker = b;
     }
 
@@ -284,14 +245,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void addMarkers(int category) {
-        if(checkMarker){
+
+        if (checkMarker) {
             myMap.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                             new LatLng(54.974895, 73.368213), 13
                     ));
             checkMarker = false;
-        }else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
-
+        } else myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
 
         for (final Places place : placesArrayList) {
             if (place.category == category) {
@@ -299,7 +260,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         }
 
-        //infoWindow and listener
+        addInfoWindow();
+    }
+
+    private void addInfoWindow() {
         myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -309,7 +273,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .from(Places.class)
                         .where("name = ?", title)
                         .executeSingle();
-
 
                 View view = getLayoutInflater().inflate(R.layout.map_card, null);
                 TextView tv = view.findViewById(R.id.name_map_card);
@@ -330,7 +293,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 return view;
             }
 
-
             @Override
             public View getInfoContents(Marker marker) {
                 return null;
@@ -349,10 +311,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 startActivity(intent);
             }
         });
-
     }
 
-    //Task for markers
     private class MyAsyncTask extends AsyncTask<GoogleMap, MarkerOptions, GoogleMap> {
 
         @Override
@@ -362,48 +322,70 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         @Override
         protected GoogleMap doInBackground(GoogleMap... googleMaps) {
+            IconGenerator iconGenerator = new IconGenerator(getContext());
             for (final Places place : placesArrayList) {
+
                 if (place.category == 0) {
+                    svg = SVGParser.getSVGFromResource(getResources(), R.raw.icon);
+                    drawable = svg.createPictureDrawable();
+                    iconGenerator.setBackground(drawable);
+                    Bitmap icon = iconGenerator.makeIcon();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(place.lat, place.lng))
                             .icon(
-                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("vectorpaint", 96, 96))
+                                    BitmapDescriptorFactory.fromBitmap(icon)
                             )
                             .title(place.name);
                     publishProgress(markerOptions);
                     continue;
                 } else if (place.category == 1) {
+                    svg = SVGParser.getSVGFromResource(getResources(), R.raw.icon_sculpture);
+                    drawable = svg.createPictureDrawable();
+                    iconGenerator.setBackground(drawable);
+                    Bitmap icon = iconGenerator.makeIcon();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(place.lat, place.lng))
                             .icon(
-                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("sculpture2", 48, 48))
+                                    BitmapDescriptorFactory.fromBitmap(icon)
                             )
                             .title(place.name);
                     publishProgress(markerOptions);
                     continue;
                 } else if (place.category == 2) {
+                    svg = SVGParser.getSVGFromResource(getResources(), R.raw.icon_church);
+                    drawable = svg.createPictureDrawable();
+                    iconGenerator.setBackground(drawable);
+                    Bitmap icon = iconGenerator.makeIcon();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(place.lat, place.lng))
                             .icon(
-                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("church2", 96, 96))
+                                    BitmapDescriptorFactory.fromBitmap(icon)
                             )
                             .title(place.name);
                     publishProgress(markerOptions);
                     continue;
                 } else if (place.category == 3) {
+                    svg = SVGParser.getSVGFromResource(getResources(), R.raw.icon_museum);
+                    drawable = svg.createPictureDrawable();
+                    iconGenerator.setBackground(drawable);
+                    Bitmap icon = iconGenerator.makeIcon();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(place.lat, place.lng))
                             .icon(
-                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("museum2", 96, 96))
+                                    BitmapDescriptorFactory.fromBitmap(icon)
                             )
                             .title(place.name);
                     publishProgress(markerOptions);
                     continue;
                 } else if (place.category == 4) {
+                    svg = SVGParser.getSVGFromResource(getResources(), R.raw.icon_theater);
+                    drawable = svg.createPictureDrawable();
+                    iconGenerator.setBackground(drawable);
+                    Bitmap icon = iconGenerator.makeIcon();
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(new LatLng(place.lat, place.lng))
                             .icon(
-                                    BitmapDescriptorFactory.fromBitmap(resizeMapIcons("theatr2", 96, 96))
+                                    BitmapDescriptorFactory.fromBitmap(icon)
                             )
                             .title(place.name);
                     publishProgress(markerOptions);
@@ -420,51 +402,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             myMap.addMarker(values[0]);
 
-
-            myMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                @Override
-                public View getInfoWindow(Marker marker) {
-
-                    int markerId = Integer.parseInt(
-                            marker.getId().substring(1)
-                    );
-                    Places place = placesArrayList.get(markerId);
-
-                    View view = getLayoutInflater().inflate(R.layout.map_card, null);
-                    TextView tv = view.findViewById(R.id.name_map_card);
-                    ImageView iv = view.findViewById(R.id.img_map_card);
-
-                    tv.setText(place.name);
-                    tv.setTypeface(
-                            SingletonFonts.getInstance(getContext())
-                                    .getFont1()
-                    );
-                    iv.setImageBitmap(
-                            BitmapFactory.decodeResource(
-                                    view.getResources(), getResources().getIdentifier(
-                                            place.img_name, "drawable", getActivity().getPackageName()
-                                    )
-                            )
-                    );
-                    return view;
-                }
-
-                @Override
-                public View getInfoContents(Marker marker) {
-                    return null;
-                }
-            });
-
-            myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    int markerId = Integer.parseInt(marker.getId().substring(1));
-                    Places place = placesArrayList.get(markerId);
-                    Intent intent = new Intent(getActivity(), PlaceActivity2.class);
-                    intent.putExtra(KEY_FOR_PLACE_id, place.id);
-                    startActivity(intent);
-                }
-            });
+            addInfoWindow();
         }
     }
 }

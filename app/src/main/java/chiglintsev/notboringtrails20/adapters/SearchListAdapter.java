@@ -38,6 +38,9 @@ public class SearchListAdapter extends RecyclerView.Adapter<RecyclerViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder recyclerViewHolder, int i) {
+        if(i == aList.size() - 1){
+            recyclerViewHolder.rmDivider();
+        }
         recyclerViewHolder.bind(aList.get(i), fragmentActivity);
     }
 

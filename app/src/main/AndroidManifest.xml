@@ -13,6 +13,7 @@
     -->
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
     <application
+
         android:name="com.activeandroid.app.Application"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -26,12 +27,20 @@
             android:value="database2.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="14" />
+            android:value="17" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="chiglintsev.notboringtrails20.models.Places" />
+            android:value="chiglintsev.notboringtrails20.models.Places,
+                           chiglintsev.notboringtrails20.models.Route1,
+                           chiglintsev.notboringtrails20.models.Route2,
+                           chiglintsev.notboringtrails20.models.Route3,
+                           chiglintsev.notboringtrails20.models.Route4,
+                           chiglintsev.notboringtrails20.models.Route5,
+                           chiglintsev.notboringtrails20.models.Route6,
+                           chiglintsev.notboringtrails20.models.Route7" />
 
         <activity
+            android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleInstance"
             android:screenOrientation="userPortrait"
             android:name=".MainActivity"
@@ -62,6 +71,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         </activity>
+
+        <activity
+            android:name=".RouteActivity"
+            android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>

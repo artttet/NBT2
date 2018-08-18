@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 public class SingletonFonts {
-    private static Typeface font1, font2, font3;
+    private static Typeface font1, font2, font3, font4;
     private static volatile SingletonFonts instance;
 
     private SingletonFonts() {
@@ -22,6 +22,7 @@ public class SingletonFonts {
             setFont1(Typeface.createFromAsset(activity.getAssets(), "fonts/lato-light.ttf"));
             setFont2(Typeface.createFromAsset(activity.getAssets(), "fonts/Lato-Bold.ttf"));
             setFont3(Typeface.createFromAsset(activity.getAssets(), "fonts/Lato-Regular.ttf"));
+            setMainFont(Typeface.createFromAsset(activity.getAssets(), "fonts/Rubik-Light.ttf"));
         }
         return localInstance;
     }
@@ -35,6 +36,7 @@ public class SingletonFonts {
     public Typeface getFont3() {
         return font3;
     }
+    public Typeface getMainFont(){return font4;}
 
     private static void setFont1(Typeface font1) {
         SingletonFonts.font1 = font1;
@@ -46,5 +48,9 @@ public class SingletonFonts {
 
     private static void setFont3(Typeface font3) {
         SingletonFonts.font3 = font3;
+    }
+
+    private static void setMainFont(Typeface font4){
+        SingletonFonts.font4 = font4;
     }
 }

@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00396d</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGray">#a5a5a5</color>
+    <color name="colorGrayLuna">#DEE2E1</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorWhite75">#77ffffff</color>
     <color name="colorStatusBarForPhotoView">#202020</color>

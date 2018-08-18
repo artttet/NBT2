@@ -41,14 +41,11 @@ public class SearchListFragment extends Fragment {
 
     private static List<SearchCategory> categoryList() {
         ArrayList<SearchCategory> list = new ArrayList<>();
-        list.add(new SearchCategory(0, "Исторические места", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(1, "Памятники, скульптуры", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(2, "Храмы", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(3, "Музеи", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(4, "Театры", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(5, "Отели", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(6, "Заправки", R.drawable.ic_add_plus));
-        list.add(new SearchCategory(7, "Сувенирные лавки", R.drawable.ic_add_plus));
+        list.add(new SearchCategory(0, "Исторические места", R.drawable.test_monument));
+        list.add(new SearchCategory(1, "Памятники, скульптуры", R.drawable.test_sculpture));
+        list.add(new SearchCategory(2, "Храмы", R.drawable.test_church));
+        list.add(new SearchCategory(3, "Музеи", R.drawable.museum3));
+        list.add(new SearchCategory(4, "Театры", R.drawable.test_theater));
         return list;
     }
 
@@ -85,6 +82,8 @@ public class SearchListFragment extends Fragment {
         rightCard = getActivity().findViewById(R.id.title_list_card);
 
         recyclerView = getView().findViewById(R.id.search_list_view);
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                //DividerItemDecoration.VERTICAL));
 
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -201,8 +200,7 @@ public class SearchListFragment extends Fragment {
 
             @Override
             public void onSearchViewShown() {
-                leftCard.setVisibility(View.GONE);
-                rightCard.setVisibility(View.GONE);
+
 
                 if(query != null){
                     recyclerView.setAdapter(adapter);
@@ -231,13 +229,8 @@ public class SearchListFragment extends Fragment {
                 getActivity().findViewById(R.id.what).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.search_icon).setVisibility(View.VISIBLE);
                 getActivity().findViewById(R.id.bnv).setVisibility(View.VISIBLE);
-                if (!((MainActivity) getActivity()).checkMarker) {
-                    leftCard.startAnimation(translateLeft);
-                    leftCard.setVisibility(View.VISIBLE);
-                    rightCard.startAnimation(translateRight);
-                    rightCard.setVisibility(View.VISIBLE);
-                }
                 ((MainActivity) getActivity()).getMapFragment(null);
+
             }
         });
 

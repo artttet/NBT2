@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import chiglintsev.notboringtrails20.MainActivity;
 import chiglintsev.notboringtrails20.PlaceActivity2;
 import chiglintsev.notboringtrails20.R;
+import chiglintsev.notboringtrails20.RouteActivity;
 import chiglintsev.notboringtrails20.SingletonFonts;
 import chiglintsev.notboringtrails20.fragments.MapFragment;
 import chiglintsev.notboringtrails20.models.Places;
@@ -25,8 +27,10 @@ import chiglintsev.notboringtrails20.models.SearchCategory;
 
 class RecyclerViewHolder extends RecyclerView.ViewHolder {
     private final static String KEY_FOR_PLACE_id = "id_key";
+    private int remove;
     private TextView routeName, placeName, placeDistance, searchListText;
     private ImageView routeImg, placeImg, searchListIcon;
+    private View divider;
     private Context context;
     private MapFragment mapFragment;
     private MainActivity mainActivity;
@@ -45,11 +49,13 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
         searchListText = itemView.findViewById(R.id.search_list_text);
         searchListIcon = itemView.findViewById(R.id.search_list_icon);
 
+        divider = itemView.findViewById(R.id.divider);
+
         context = itemView.getContext();
     }
 
     //BIND FOR ROUTES
-    public void bind(Routes routes, int id) {
+    public void bind(final Routes routes, int id) {
         routeName.setText(routes.title);
         routeName.setTypeface(SingletonFonts.getInstance(context).getFont1());
 
@@ -63,6 +69,17 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
         }
 
         Picasso.get().load(routes.img).fit().centerCrop(1).into(routeImg);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                long id = routes.id;
+                Intent intent = new Intent(context, RouteActivity.class);
+                intent.putExtra("id", id);
+                Log.d("route", "long id --- " + id);
+                context.startActivity(intent);
+            }
+        });
     }
 
     //BIND FOR PLACES
@@ -95,30 +112,39 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(final Places place, final FragmentActivity fragmentActivity){
+        if(remove == 1){
+            divider.setVisibility(View.INVISIBLE);
+            remove = 0;
+        }
         searchListText.setText(place.name);
-        searchListText.setTypeface(SingletonFonts.getInstance(context).getFont3());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity) fragmentActivity).getMarker(place);
                 ((MainActivity) fragmentActivity).getMapFragment(-2);
-                ((MainActivity) fragmentActivity).msvClose(place.name);
+                ((MainActivity) fragmentActivity).msvClose(place.name, "place");
 
             }
         });
     }
 
     public void bind(final SearchCategory searchCategory, final FragmentActivity fragment){
+        if(remove == 1){
+            divider.setVisibility(View.INVISIBLE);
+            remove = 0;
+        }
         searchListText.setText(searchCategory.title);
-        searchListText.setTypeface(SingletonFonts.getInstance(context).getFont3());
         searchListIcon.setImageResource(searchCategory.img);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity) fragment).getMapFragment(searchCategory.getId());
-                ((MainActivity) fragment).msvClose(searchCategory.title);
-
+                ((MainActivity) fragment).msvClose(searchCategory.title, "category");
             }
         });
+    }
+
+    public void rmDivider(){
+        remove = 1;
     }
 }

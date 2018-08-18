@@ -132,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openSearch(View view) {
-
+        findViewById(R.id.search_icon).setVisibility(View.INVISIBLE);
+        leftCard.setVisibility(View.GONE);
+        rightCard.setVisibility(View.GONE);
         if(fragmentCheck == 0){
             what.setText("Что вы ищете?");
 
@@ -215,12 +217,14 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
-    public void msvClose(String name){
+    public void msvClose(String name, String from){
         leftCard.setVisibility(View.INVISIBLE);
         rightCard.setVisibility(View.INVISIBLE);
         msv.closeSearch();
         what.setText(name);
-        searchListFragment.addQuery(userQuery);
+        if(from.equals("place")){
+            searchListFragment.addQuery(userQuery);
+        }
         Log.d("place", "from MainActivity --- " + userQuery);
     }
 
