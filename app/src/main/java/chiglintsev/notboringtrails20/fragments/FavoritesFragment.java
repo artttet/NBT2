@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chiglintsev.notboringtrails20.R;
+import chiglintsev.notboringtrails20.SingletonFonts;
 import chiglintsev.notboringtrails20.adapters.PlacesAdapter;
 import chiglintsev.notboringtrails20.models.Places;
 
@@ -99,6 +100,7 @@ public class FavoritesFragment extends Fragment {
         if (adapter.getItemCount() == 0) {
             recyclerView.setVisibility(View.GONE);
             voidFavorite.setVisibility(View.VISIBLE);
+            voidFavorite.setTypeface(SingletonFonts.getInstance(getContext()).getFont3());
         } else {
             voidFavorite.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -109,11 +111,5 @@ public class FavoritesFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Избранное");
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_add, menu);
     }
 }

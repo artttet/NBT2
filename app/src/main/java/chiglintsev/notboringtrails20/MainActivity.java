@@ -26,7 +26,7 @@ import chiglintsev.notboringtrails20.models.Places;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView what;
+    private TextView what, titleMap, titleList;
     public FragmentTransaction trans;
     private Animation translateMain, translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
     private int fragmentCheck;
@@ -99,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         leftCard = findViewById(R.id.title_map_card);
         rightCard = findViewById(R.id.title_list_card);
         what = findViewById(R.id.what);
+        what.setTypeface(SingletonFonts.getInstance(this).getFont3());
+        titleMap = findViewById(R.id.title_map);
+        titleMap.setTypeface(SingletonFonts.getInstance(this).getFont3());
+        titleList = findViewById(R.id.title_list);
+        titleList.setTypeface(SingletonFonts.getInstance(this).getFont3());
         routesFragment = new RoutesFragment();
         placesFragment = new PlacesFragment();
         mapFragment = new MapFragment();

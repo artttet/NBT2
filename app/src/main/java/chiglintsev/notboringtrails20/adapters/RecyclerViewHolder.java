@@ -117,6 +117,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
             remove = 0;
         }
         searchListText.setText(place.name);
+        searchListText.setTypeface(SingletonFonts.getInstance(context).getFont3());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +135,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
             remove = 0;
         }
         searchListText.setText(searchCategory.title);
+        searchListText.setTypeface(SingletonFonts.getInstance(context).getFont3());
         searchListIcon.setImageResource(searchCategory.img);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

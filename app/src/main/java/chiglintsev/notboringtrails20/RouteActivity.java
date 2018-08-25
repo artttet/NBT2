@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 
 import com.activeandroid.ActiveAndroid;
@@ -19,13 +20,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.transform.Pivot;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import chiglintsev.notboringtrails20.adapters.CardsAdapter;
 import chiglintsev.notboringtrails20.models.Places;
 import chiglintsev.notboringtrails20.models.Route1;
 import chiglintsev.notboringtrails20.models.Route2;
@@ -87,6 +93,18 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         routeId = getIntent().getLongExtra("id", -1);
 
         loadPlaces(routeId);
+
+        DiscreteScrollView discreteScrollView = findViewById(R.id.cards);
+        discreteScrollView.setAdapter(new CardsAdapter(mainList));
+
+        discreteScrollView.setItemTransformer(new ScaleTransformer.Builder()
+        .setMaxScale(1.05f)
+        .setMinScale(0.8f)
+        .setPivotX(Pivot.X.CENTER)
+        .setPivotY(Pivot.Y.BOTTOM)
+        .build());
+
+        discreteScrollView.setHasFixedSize(true);
     }
 
     private void loadPlaces(long routeId) {
@@ -101,6 +119,7 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
                         .execute();
                 for(Route1 route1 : idList){
                     placesIdList.add(route1.place_id);
+                    Log.d("test2", String.valueOf(route1.place_id));
                 }
             }break;
 
@@ -166,7 +185,7 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         }
 
         for (int i = 0; i < placesIdList.size(); i++) {
-            Places place = new Select("Id", "name", "lat", "lng")
+            Places place = new Select("Id", "name", "image_name", "text", "lat", "lng", "category")
                     .from(Places.class)
                     .where("Id = ?", placesIdList.get(i))
                     .executeSingle();
@@ -188,10 +207,12 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
         myMap.getUiSettings().setMyLocationButtonEnabled(true);
-        myMap.getUiSettings().setZoomControlsEnabled(true);
+
         myMap.setMapType(2);
 
         addMarkers();
+
+
     }
 
     private void addMarkers() {
@@ -217,5 +238,16 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
+        if(locationManager != null)locationManager.removeUpdates(locationListener);
     }
+
+    public CameraPosition getMapCamera(){
+        return myMap.getCameraPosition();
+    }
+
+    public void animateToMarker(Places place){
+        myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place.lat, place.lng), 16));
+
+    }
+
 }

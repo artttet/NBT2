@@ -26,5 +26,6 @@
     <string name="google_map_api_noteZ">AIzaSyBQw7FPvaS5ne8aRUm94usmltDpYYgOG3Q</string>
     <string name="action_settings">Settings</string>
     <string name="more">Ещё</string>
+    <string name="list">Список</string>
 
 </resources>

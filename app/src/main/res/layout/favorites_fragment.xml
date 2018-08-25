@@ -31,7 +31,7 @@
             android:gravity="center"
             android:padding="32dp"
             android:text="@string/void_favorite"
-            android:textSize="32sp" />
+            android:textSize="28sp" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_favorites"

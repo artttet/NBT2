@@ -59,6 +59,7 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
 
         place_main_textV.setText(place.text);
         place_main_textV.setTypeface(SingletonFonts.getInstance(this).getFont3());
+        //place_main_textV.setTextSize(15);
 
 
         place_infoV.setText(place.info);

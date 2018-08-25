@@ -27,7 +27,7 @@
             android:value="database2.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="17" />
+            android:value="20" />
         <meta-data
             android:name="AA_MODELS"
             android:value="chiglintsev.notboringtrails20.models.Places,
