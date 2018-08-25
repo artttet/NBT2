@@ -23,11 +23,20 @@
         android:src="@drawable/ic_arrow_back_white_24dp" />
 
     <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:layout_gravity="bottom"
         android:id="@+id/cards"
         android:layout_width="match_parent"
         android:layout_height="170dp"
+        android:layout_gravity="bottom"
         app:dsv_orientation="horizontal" />
+
+    <View
+        android:id="@+id/big_card_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorCardBackground"
+        android:visibility="gone" />
+
+    <include layout="@layout/in_route_big_card" />
 
 
 </FrameLayout>

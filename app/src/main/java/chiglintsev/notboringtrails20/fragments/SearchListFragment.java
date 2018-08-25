@@ -215,6 +215,9 @@ public class SearchListFragment extends Fragment {
                     query = null;
                 }
 
+                getActivity().findViewById(R.id.title_map_card).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.title_list_card).setVisibility(View.GONE);
+
                 try {getActivity().findViewById(R.id.search_icon).setVisibility(View.GONE);}
                 catch (NullPointerException e) {}
                 try {getActivity().findViewById(R.id.bnv).setVisibility(View.GONE); }

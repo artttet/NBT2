@@ -178,7 +178,9 @@ public class PlacesFragment extends Fragment {
     private void workWithList() {
         List<Places> placesList = new Select("Id", "name", "image_name", "lat", "lng")
                 .from(Places.class)
+                .where("Id < ?", 59)
                 .execute();
+
 
         placesArrayList = new ArrayList<>();
 

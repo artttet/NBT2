@@ -41,7 +41,7 @@
 
         <activity
             android:windowSoftInputMode="adjustNothing"
-            android:launchMode="singleInstance"
+            android:launchMode="standard"
             android:screenOrientation="userPortrait"
             android:name=".MainActivity"
             android:theme="@style/AppTheme">
@@ -73,6 +73,7 @@
         </activity>
 
         <activity
+            android:screenOrientation="userPortrait"
             android:name=".RouteActivity"
             android:theme="@style/AppTheme"/>
 

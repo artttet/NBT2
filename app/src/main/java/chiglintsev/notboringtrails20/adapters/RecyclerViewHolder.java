@@ -34,6 +34,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
     private Context context;
     private MapFragment mapFragment;
     private MainActivity mainActivity;
+
     RecyclerViewHolder(View itemView) {
         super(itemView);
          mapFragment = new MapFragment();

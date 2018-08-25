@@ -46,8 +46,6 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
 
 
     private void fillFromBD(long id) {
-
-
         Places place = new Select().from(Places.class).where("Id = ?", id).executeSingle();
 
         resID = this.getResources().getIdentifier(place.img_name, "drawable", this.getPackageName());
@@ -99,8 +97,9 @@ public class PlaceActivity2 extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void back(View view) {
-        super.onBackPressed();
+        finish();
     }
+
 
     public void like(View view) {
 

@@ -1,5 +1,6 @@
 package chiglintsev.notboringtrails20.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,16 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
         this.data = data;
     }
 
+    public interface OnCardClickListener {
+        void onCardClick(View view, Places place);
+    }
+
+    private OnCardClickListener listener;
+
+    public void setOnCardClickListener(OnCardClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -51,29 +62,32 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView name, text, warningName, warningText;
         private ImageView image;
+        public Places place;
 
-        public ViewHolder(@NonNull final View itemView) {
+        public Places getPlace(){
+            return place;
+        }
+
+        ViewHolder(@NonNull final View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.in_route_card_img);
             name = itemView.findViewById(R.id.in_route_card_name);
             text = itemView.findViewById(R.id.in_route_card_text);
             warningName = itemView.findViewById(R.id.warning_title);
             warningText = itemView.findViewById(R.id.warning_text);
+        }
+
+        void addPlace(final Places place) {
+            this.place = place;
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    listener.onCardClick(view, place);
                 }
             });
 
-        }
-
-        public void addPlace(Places place) {
-
-            Log.d("route", "add" + place.name);
-
-            if(place.category == 5){
+            if (place.category == 5) {
                 image.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.INVISIBLE);
                 text.setVisibility(View.INVISIBLE);
@@ -85,7 +99,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
 
                 warningText.setText(place.text);
                 warningText.setTypeface(SingletonFonts.getInstance(itemView.getContext()).getMainFont());
-            }else {
+            } else {
                 warningText.setVisibility(View.INVISIBLE);
                 warningName.setVisibility(View.INVISIBLE);
                 name.setVisibility(View.VISIBLE);

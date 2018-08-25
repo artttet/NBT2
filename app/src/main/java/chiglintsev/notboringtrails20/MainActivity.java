@@ -119,11 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        bottomNavigation.setSelectedItemId(0);
-    }
+
 
     private void bnvWork() {
         bottomNavigation = findViewById(R.id.bnv);
@@ -136,10 +132,11 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
+    
+
     public void openSearch(View view) {
         findViewById(R.id.search_icon).setVisibility(View.INVISIBLE);
-        leftCard.setVisibility(View.GONE);
-        rightCard.setVisibility(View.GONE);
+
         if(fragmentCheck == 0){
             what.setText("Что вы ищете?");
 
@@ -238,4 +235,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String userQuery;
+
+    public void setBnvItem(){
+        bottomNavigation.getMenu().getItem(0).setChecked(true);
+
+    }
+
 }

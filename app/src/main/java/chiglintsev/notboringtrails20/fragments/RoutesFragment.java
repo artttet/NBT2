@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import chiglintsev.notboringtrails20.MainActivity;
 import chiglintsev.notboringtrails20.R;
 import chiglintsev.notboringtrails20.adapters.RoutesAdapter;
 import chiglintsev.notboringtrails20.models.Routes;
@@ -71,6 +72,8 @@ public class RoutesFragment extends Fragment {
 
         //animation for open fragment
         animOpen();
+
+        ((MainActivity)getActivity()).setBnvItem();
         
     }
 
