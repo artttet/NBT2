@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/moreBnv"
-        android:icon="@drawable/ic_more_vert_white_24dp"
+        android:icon="@drawable/baseline_more_horiz_black_24dp"
         android:title="@string/more"/>
 
 

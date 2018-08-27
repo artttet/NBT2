@@ -1,23 +1,18 @@
 package chiglintsev.notboringtrails20;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -25,13 +20,11 @@ import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,8 +32,6 @@ import com.google.maps.android.ui.IconGenerator;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +50,6 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private static final int PERMISSION_CODE = 14;
     private final static String KEY_FOR_PLACE_id = "id_key";
-    private LatLng centr_route;
     private static final LatLng ROUTE1_CENTR = new LatLng(54.985563, 73.374540);
     private static final LatLng ROUTE2_CENTR = new LatLng(54.982010, 73.376941);
     private static final LatLng ROUTE3_CENTR = new LatLng(54.982122, 73.374403);
@@ -67,11 +57,6 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
     private static final LatLng ROUTE5_CENTR = new LatLng(54.984789, 73.370660);
     private static final LatLng ROUTE6_CENTR = new LatLng(54.990185, 73.367569);
     private static final LatLng ROUTE7_CENTR = new LatLng(54.977542, 73.377802);
-    private boolean checkBigCard = false;
-    private boolean checkLastItem = false;
-    private DiscreteScrollView discreteScrollView;
-
-
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -89,10 +74,17 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         public void onProviderDisabled(String provider) {
         }
     };
+    View bigCard, bigCardBackground;
+    private LatLng centr_route;
+    private boolean checkBigCard = false;
+    private boolean checkLastItem = false;
+    private DiscreteScrollView discreteScrollView;
     private GoogleMap myMap;
     private long routeId;
     private ArrayList<Places> mainList;
     private LocationManager locationManager;
+    private Places currentPlace;
+    private int lastItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +103,10 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         loadPlaces(routeId);
 
         discreteScrollView = findViewById(R.id.cards);
-        CardsAdapter cardsAdapter = new CardsAdapter(mainList);
+        final CardsAdapter cardsAdapter = new CardsAdapter(mainList);
+
         cardsAdapter.setOnCardClickListener(this);
+
         discreteScrollView.setAdapter(cardsAdapter);
 
         discreteScrollView.setItemTransformer(new ScaleTransformer.Builder()
@@ -127,18 +121,19 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         discreteScrollView.addOnItemChangedListener(new DiscreteScrollView.OnItemChangedListener<RecyclerView.ViewHolder>() {
             @Override
             public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int i) {
-                Places place = mainList.get(viewHolder.getAdapterPosition());
-                if (viewHolder.getAdapterPosition() != mainList.size() - 1) {
-                    animateToMarker(place);
+                currentPlace = mainList.get(viewHolder.getAdapterPosition());
+
+                if (viewHolder.getAdapterPosition() != lastItem) {
+                    animateToMarker(currentPlace);
+                    checkLastItem = false;
                 } else {
                     checkLastItem = true;
                 }
             }
         });
 
+
         bigCardBackground = findViewById(R.id.big_card_background);
-
-
         bigCardBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,6 +235,8 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
                     .executeSingle();
             mainList.add(place);
         }
+
+        lastItem = mainList.size() - 1;
     }
 
     @Override
@@ -277,7 +274,7 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
                     iconBitmap = icon.makeIcon(String.valueOf(count));
                     count++;
                 } else {
-                    iconBitmap = icon.makeIcon("!");
+                    iconBitmap = icon.makeIcon("!!!");
                 }
 
                 myMap.addMarker(new MarkerOptions()
@@ -290,15 +287,11 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+
                 discreteScrollView.scrollToPosition(Integer.parseInt(marker.getId().substring(1)));
                 return false;
             }
         });
-
-    }
-
-
-    private void scrollToItem(){
 
     }
 
@@ -321,89 +314,128 @@ public class RouteActivity extends FragmentActivity implements OnMapReadyCallbac
 
     }
 
-    View bigCard, bigCardBackground;
-
     @Override
     public void onBackPressed() {
         if (checkBigCard) {
-            bigCardBackground.setVisibility(View.GONE);
-
-            Animation rmBigCard = AnimationUtils.loadAnimation(this, R.anim.transition_rev);
-            bigCard.startAnimation(rmBigCard);
-            bigCard.setVisibility(View.GONE);
-
+            rmBigCard();
             checkBigCard = false;
         } else {
             super.onBackPressed();
         }
     }
 
+    private void scrollTo(Places place) {
+
+
+        switch ((int) routeId) {
+            case 0: {
+                Route1 route1 = new Select("Id")
+                        .from(Route1.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route1.id);
+            }break;
+            case 1: {
+                Route2 route2 = new Select("Id")
+                        .from(Route2.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route2.id);
+            }break;
+            case 2: {
+                Route3 route3 = new Select("Id")
+                        .from(Route3.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route3.id);
+            }break;
+            case 3: {
+                Route4 route4 = new Select("Id")
+                        .from(Route4.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route4.id);
+            }break;
+            case 4: {
+                Route5 route5 = new Select("Id")
+                        .from(Route5.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route5.id);
+            }break;
+            case 5: {
+                Route6 route6 = new Select("Id")
+                        .from(Route6.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route6.id);
+            }break;
+            case 6: {
+                Route7 route7 = new Select("Id")
+                        .from(Route7.class)
+                        .where("place_id = ?", place.id)
+                        .executeSingle();
+
+                discreteScrollView.scrollToPosition((int) route7.id);
+            }break;
+        }
+
+        currentPlace = place;
+        if (currentPlace.id != mainList.get(lastItem).id) {
+            animateToMarker(currentPlace);
+            checkLastItem = false;
+        } else {
+            checkLastItem = true;
+        }
+    }
+
     @Override
     public void onCardClick(View view, Places place) {
-        if (checkLastItem) {
-            checkBigCard = true;
-            TextView bigCardName = findViewById(R.id.in_route_big_card_name);
-            TextView bigCardText = findViewById(R.id.in_route_big_card_text);
-            bigCardName.setText(place.name);
-            bigCardName.setTypeface(SingletonFonts.getInstance(this).getFont3());
-            bigCardText.setText(place.text);
-            bigCardText.setTypeface(SingletonFonts.getInstance(this).getFont3());
 
-            bigCard = findViewById(R.id.in_route_big_card);
-            Animation addBigCard = AnimationUtils.loadAnimation(this, R.anim.transition);
-
-
-            Animation addBigCardBackground = AnimationUtils.loadAnimation(this, R.anim.shadow);
-            bigCardBackground.setVisibility(View.VISIBLE);
-            bigCardBackground.startAnimation(addBigCardBackground);
-
-            bigCard.setVisibility(View.VISIBLE);
-            bigCard.startAnimation(addBigCard);
-
-            bigCard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            });
+        if (currentPlace.id != place.id) {
+            scrollTo(place);
+        } else if (currentPlace.id == place.id && checkLastItem) {
+            addBigCard(place);
         } else {
             if (!getMapCameraLat().toString().substring(0, 7).equals(String.valueOf(place.lat).substring(0, 7))) {
                 animateToMarker(place);
             } else {
-                if (place.category != 5) {
-                    Intent intent = new Intent(RouteActivity.this, PlaceActivity2.class);
-                    intent.putExtra(KEY_FOR_PLACE_id, place.id);
-                    startActivity(intent);
-                } else {
-                    checkBigCard = true;
-                    TextView bigCardName = findViewById(R.id.in_route_big_card_name);
-                    TextView bigCardText = findViewById(R.id.in_route_big_card_text);
-                    bigCardName.setText(place.name);
-                    bigCardName.setTypeface(SingletonFonts.getInstance(this).getFont3());
-                    bigCardText.setText(place.text);
-                    bigCardText.setTypeface(SingletonFonts.getInstance(this).getFont3());
-
-                    bigCard = findViewById(R.id.in_route_big_card);
-                    Animation addBigCard = AnimationUtils.loadAnimation(this, R.anim.transition);
-
-
-                    Animation addBigCardBackground = AnimationUtils.loadAnimation(this, R.anim.shadow);
-                    bigCardBackground.setVisibility(View.VISIBLE);
-                    bigCardBackground.startAnimation(addBigCardBackground);
-
-                    bigCard.setVisibility(View.VISIBLE);
-                    bigCard.startAnimation(addBigCard);
-
-                    bigCard.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                        }
-                    });
-
-
-                }
+                addBigCard(place);
             }
-
         }
+    }
+
+    private void addBigCard(Places place) {
+        checkBigCard = true;
+        TextView bigCardName = findViewById(R.id.in_route_big_card_name);
+        TextView bigCardText = findViewById(R.id.in_route_big_card_text);
+        bigCardName.setText(place.name);
+        bigCardName.setTypeface(SingletonFonts.getInstance(this).getFont3());
+        bigCardText.setText(place.text);
+        bigCardText.setTypeface(SingletonFonts.getInstance(this).getFont3());
+
+        bigCard = findViewById(R.id.in_route_big_card);
+        Animation addBigCard = AnimationUtils.loadAnimation(this, R.anim.transition);
+
+
+        Animation addBigCardBackground = AnimationUtils.loadAnimation(this, R.anim.shadow);
+        bigCardBackground.setVisibility(View.VISIBLE);
+        bigCardBackground.startAnimation(addBigCardBackground);
+
+        bigCard.setVisibility(View.VISIBLE);
+        bigCard.startAnimation(addBigCard);
+
+        bigCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
     }
 
     private void rmBigCard() {

@@ -45,10 +45,6 @@ public class MoreFragment extends Fragment {
                 "О приложении"
         };
 
-        final int[] icons = new int[]{
-          R.drawable.ic_add_plus,R.drawable.ic_add_plus,R.drawable.ic_add_plus,R.drawable.ic_add_plus,R.drawable.ic_add_plus,R.drawable.ic_add_plus
-
-        };
         listView = view.findViewById(R.id.more_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 R.layout.more_list_item,mores);

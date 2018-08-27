@@ -1,6 +1,8 @@
 package chiglintsev.notboringtrails20;
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -26,8 +28,11 @@ import chiglintsev.notboringtrails20.models.Places;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView what, titleMap, titleList;
     public FragmentTransaction trans;
+    public boolean checkMarker = false;
+    public String userQuery;
+    private SharedPreferences sPref;
+    private TextView what, titleMap, titleList;
     private Animation translateMain, translateLeft, translateRight, translateMainRev, translateLeftRev, translateRightRev;
     private int fragmentCheck;
     private BottomNavigationView bottomNavigation;
@@ -40,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private SearchListFragment searchListFragment;
     private MoreFragment moreFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigation;
-    public boolean checkMarker = false;
 
     {
         onNavigation = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (bottomNavigation.getSelectedItemId() != R.id.placesBnv) {
                             mainCard.setVisibility(View.VISIBLE);
-                            if(!checkMarker){
+                            if (!checkMarker) {
                                 leftCard.setVisibility(View.VISIBLE);
                                 rightCard.setVisibility(View.VISIBLE);
                             }
@@ -88,13 +92,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sPref = getPreferences(MODE_PRIVATE);
+        if(sPref.getInt("first", 0) == 0) {
+
+            SharedPreferences.Editor ed = sPref.edit();
+            ed.putInt("first",1);
+            ed.apply();
+
+            Intent intent = new Intent(MainActivity.this, StartActivity.class);
+            startActivity(intent);
+        }
+
         setContentView(R.layout.activity_main);
-
-
 
         loadAnims();
 
         fragmentCheck = 0;
+
+        routesFragment = new RoutesFragment();
+        placesFragment = new PlacesFragment();
+        mapFragment = new MapFragment();
+        favoritesFragment = new FavoritesFragment();
+        searchListFragment = new SearchListFragment();
+        moreFragment = new MoreFragment();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         mainCard = findViewById(R.id.search_place);
         leftCard = findViewById(R.id.title_map_card);
         rightCard = findViewById(R.id.title_list_card);
@@ -104,22 +131,20 @@ public class MainActivity extends AppCompatActivity {
         titleMap.setTypeface(SingletonFonts.getInstance(this).getFont3());
         titleList = findViewById(R.id.title_list);
         titleList.setTypeface(SingletonFonts.getInstance(this).getFont3());
-        routesFragment = new RoutesFragment();
-        placesFragment = new PlacesFragment();
-        mapFragment = new MapFragment();
-        favoritesFragment = new FavoritesFragment();
-        searchListFragment = new SearchListFragment();
-        moreFragment = new MoreFragment();
 
-        bnvWork();
-        //transition(routesFragment);
         msv = findViewById(R.id.search);
 
+        //transition(routesFragment);
         transition(routesFragment);
 
+        bnvWork();
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
 
+    }
 
     private void bnvWork() {
         bottomNavigation = findViewById(R.id.bnv);
@@ -132,25 +157,23 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
-    
-
     public void openSearch(View view) {
         findViewById(R.id.search_icon).setVisibility(View.INVISIBLE);
 
-        if(fragmentCheck == 0){
+        if (fragmentCheck == 0) {
             what.setText("Что вы ищете?");
 
-            if(mapFragment.checkCategory != -1){
+            if (mapFragment.checkCategory != -1) {
                 mapFragment.addCategory(-1);
             }
             transition(searchListFragment);
             searchListFragment.mapSearch(msv);
-            if(checkMarker){
+            if (checkMarker) {
                 what.setVisibility(View.INVISIBLE);
                 checkMarker = false;
                 mapFragment.setCheckMarker(false);
             }
-        }else if(fragmentCheck == 1){
+        } else if (fragmentCheck == 1) {
             what.setText("Что вы ищете?");
             placesFragment.placesSearch(msv);
         }
@@ -183,14 +206,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void topBarAnim() {
-        if(!checkMarker){
+        if (!checkMarker) {
             leftCard.startAnimation(translateLeft);
             rightCard.startAnimation(translateRight);
         }
         mainCard.startAnimation(translateMain);
         topBarOn();
     }
-
 
     private void loadAnims() {
         translateMain = AnimationUtils.loadAnimation(this, R.anim.search_anim);
@@ -200,16 +222,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(msv.isSearchOpen()){
+        if (msv.isSearchOpen()) {
             msv.closeSearch();
-        }else super.onBackPressed();
+        } else super.onBackPressed();
     }
 
-    public MapFragment getFragment(){
+    public MapFragment getFragment() {
         return this.mapFragment;
     }
 
-    public void getMapFragment(int category){
+    public void getMapFragment(int category) {
         fragmentCheck = 0;
         mapFragment.addCategory(category);
         checkMarker = true;
@@ -219,24 +241,22 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
-    public void msvClose(String name, String from){
+    public void msvClose(String name, String from) {
         leftCard.setVisibility(View.INVISIBLE);
         rightCard.setVisibility(View.INVISIBLE);
         msv.closeSearch();
         what.setText(name);
-        if(from.equals("place")){
+        if (from.equals("place")) {
             searchListFragment.addQuery(userQuery);
         }
         Log.d("place", "from MainActivity --- " + userQuery);
     }
 
-    public void getMarker(Places place){
+    public void getMarker(Places place) {
         mapFragment.showMarker(place);
     }
 
-    public String userQuery;
-
-    public void setBnvItem(){
+    public void setBnvItem() {
         bottomNavigation.getMenu().getItem(0).setChecked(true);
 
     }
