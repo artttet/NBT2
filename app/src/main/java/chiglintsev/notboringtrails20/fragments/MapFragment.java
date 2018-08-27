@@ -1,5 +1,6 @@
 package chiglintsev.notboringtrails20.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -53,7 +55,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int PERMISSION_CODE = 14;
     private final static String KEY_FOR_PLACE_id = "id_key";
     public int checkCategory = -1;
-    private SVG svg;
     MyAsyncTask asyncTask;
     Places searchPlace = null;
     boolean checkMarker = false;
@@ -75,7 +76,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         public void onProviderDisabled(String provider) {
         }
     };
-
+    private FloatingActionButton fab;
+    private SVG svg;
     private ArrayList<Places> placesArrayList;
     private GoogleMap myMap;
     private LocationManager locationManager;
@@ -96,14 +98,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.map_fragment, null);
+        View view = inflater.inflate(R.layout.map_fragment, null);
+        fab = view.findViewById(R.id.fab);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         //fragment for GoogleMap
         addMFragment();
 
@@ -140,14 +142,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
         myMap = googleMap;
         myMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
-        myMap.getUiSettings().setZoomControlsEnabled(true);
-        myMap.getUiSettings().setMyLocationButtonEnabled(false);
         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(54.974895, 73.368213), 13)
         );
+
 
         if (checkCategory == -1) {
             asyncTask.execute();
@@ -183,6 +184,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             //запрос разрешения на получения геолокации
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
         } else {
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null);
+                }
+            });
+
             if (!myMap.isMyLocationEnabled())
                 myMap.setMyLocationEnabled(true);
 
@@ -199,10 +210,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 } catch (NullPointerException e) {
                 }
 
+
             } else if (restorePosition != null && checkCategory == -1)
                 myMap.moveCamera(CameraUpdateFactory.newCameraPosition(restorePosition));
-        }
 
+
+        }
 
     }
 

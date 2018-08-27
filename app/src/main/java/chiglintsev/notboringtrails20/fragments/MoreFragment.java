@@ -1,5 +1,6 @@
 package chiglintsev.notboringtrails20.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,18 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import chiglintsev.notboringtrails20.InMoreActivity;
 import chiglintsev.notboringtrails20.R;
 
 public class MoreFragment extends Fragment {
     private ListView listView;
 
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 
@@ -41,7 +46,6 @@ public class MoreFragment extends Fragment {
                 "Провести досуг в Омске",
                 "Остаться на ночлег",
                 "Сувенирные лавки",
-                "Настройки",
                 "О приложении"
         };
 
@@ -50,6 +54,45 @@ public class MoreFragment extends Fragment {
                 R.layout.more_list_item,mores);
 
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0: {
+                        Intent intent = new Intent(getContext(), InMoreActivity.class);
+                        intent.putExtra("POSITION_FROM_MORE_FRAGMENT", i);
+                        intent.putExtra("TITLE_FROM_MORE_FRAGMENTS", "Больше узнать об Омске");
+                        startActivity(intent);
+                    }break;
+                    case 1: {
+                        Intent intent = new Intent(getContext(), InMoreActivity.class);
+                        intent.putExtra("POSITION_FROM_MORE_FRAGMENT", i);
+                        intent.putExtra("TITLE_FROM_MORE_FRAGMENTS", "Провести досуг в Омске");
+                        startActivity(intent);
+                    }break;
+                    case 2: {
+                        Intent intent = new Intent(getContext(), InMoreActivity.class);
+                        intent.putExtra("POSITION_FROM_MORE_FRAGMENT", i);
+                        intent.putExtra("TITLE_FROM_MORE_FRAGMENTS", "Остаться на ночлег");
+                        startActivity(intent);
+                    }break;
+                    case 3: {
+                        Intent intent = new Intent(getContext(), InMoreActivity.class);
+                        intent.putExtra("POSITION_FROM_MORE_FRAGMENT", i);
+                        intent.putExtra("TITLE_FROM_MORE_FRAGMENTS", "Сувенирные лавки");
+                        startActivity(intent);
+                    }break;
+                    case 4: {
+                        Intent intent = new Intent(getContext(), InMoreActivity.class);
+                        intent.putExtra("POSITION_FROM_MORE_FRAGMENT", i);
+                        intent.putExtra("TITLE_FROM_MORE_FRAGMENTS", "О приложении");
+                        startActivity(intent);
+                    }break;
+                }
+            }
+        });
+
     }
 
     @Override

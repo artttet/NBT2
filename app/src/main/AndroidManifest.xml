@@ -13,7 +13,6 @@
     -->
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
     <application
-
         android:name="com.activeandroid.app.Application"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -30,18 +29,11 @@
             android:value="22" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="chiglintsev.notboringtrails20.models.Places,
-                           chiglintsev.notboringtrails20.models.Route1,
-                           chiglintsev.notboringtrails20.models.Route2,
-                           chiglintsev.notboringtrails20.models.Route3,
-                           chiglintsev.notboringtrails20.models.Route4,
-                           chiglintsev.notboringtrails20.models.Route5,
-                           chiglintsev.notboringtrails20.models.Route6,
-                           chiglintsev.notboringtrails20.models.Route7" />
+            android:value="chiglintsev.notboringtrails20.models.Places,                            chiglintsev.notboringtrails20.models.Route1,                            chiglintsev.notboringtrails20.models.Route2,                            chiglintsev.notboringtrails20.models.Route3,                            chiglintsev.notboringtrails20.models.Route4,                            chiglintsev.notboringtrails20.models.Route5,                            chiglintsev.notboringtrails20.models.Route6,                            chiglintsev.notboringtrails20.models.Route7" />
 
         <activity
             android:name=".MainActivity"
-            android:launchMode="standard"
+            android:launchMode="singleTask"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustNothing">
@@ -52,36 +44,30 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_map_api_note" />
-
 
         <activity
             android:name=".PlaceActivity2"
             android:label=" "
             android:screenOrientation="userPortrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".PhotoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".RouteActivity"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".StartActivity"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme" />
-
+        <activity
+            android:name=".InMoreActivity"
+            android:screenOrientation="userPortrait"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

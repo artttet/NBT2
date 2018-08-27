@@ -52,7 +52,7 @@ public class CardsAdapter extends RecyclerView.Adapter<CardsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.addPlace(data.get(i));
-        Log.d("route", "from onCreate " + i );
+
     }
 
     @Override

@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             topBarAnim();
                         }
-
-
                         return true;
                     case R.id.favoritesBnv:
                         transition(favoritesFragment);
@@ -92,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         sPref = getPreferences(MODE_PRIVATE);
         if(sPref.getInt("first", 0) == 0) {
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        setContentView(R.layout.activity_main);
+
 
         loadAnims();
 
@@ -116,12 +115,6 @@ public class MainActivity extends AppCompatActivity {
         favoritesFragment = new FavoritesFragment();
         searchListFragment = new SearchListFragment();
         moreFragment = new MoreFragment();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         mainCard = findViewById(R.id.search_place);
         leftCard = findViewById(R.id.title_map_card);
         rightCard = findViewById(R.id.title_list_card);
@@ -138,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
         transition(routesFragment);
 
         bnvWork();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     @Override

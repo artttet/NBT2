@@ -34,7 +34,8 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-
+        radioButton = findViewById(R.id.radio0);
+        radioButton.setChecked(true);
 
         ViewPager viewPager = findViewById(R.id.start_pager);
 
@@ -104,8 +105,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        radioButton = findViewById(R.id.radio0);
-        radioButton.setChecked(true);
+
     }
 
     public static class PlaceholderFragment extends Fragment {

@@ -92,8 +92,8 @@ public class RoutesFragment extends Fragment {
 
     private void addToolbar(View view){
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         toolbar.setTitle("Маршруты");
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
     }
 
 }
