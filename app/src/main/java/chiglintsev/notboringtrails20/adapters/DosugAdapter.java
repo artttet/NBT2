@@ -18,9 +18,12 @@ public class DosugAdapter extends  RecyclerView.Adapter<DosugAdapter.ViewHolder>
 
     private List<Museums> museums;
 
+
     public DosugAdapter(List<Museums> museums) {
         this.museums = museums;
     }
+
+
 
     @NonNull
     @Override
