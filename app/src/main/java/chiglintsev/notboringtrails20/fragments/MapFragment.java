@@ -144,6 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         myMap = googleMap;
+        myMap.getUiSettings().setCompassEnabled(false);
         myMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style));
         myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(54.974895, 73.368213), 13)
@@ -188,18 +189,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null);
+                    try{
+                        @SuppressLint("MissingPermission") Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16), 1500, null);
+                    }catch (NullPointerException e){}
+
                 }
             });
 
             if (!myMap.isMyLocationEnabled())
                 myMap.setMyLocationEnabled(true);
+                myMap.getUiSettings().setMyLocationButtonEnabled(false);
 
             //проверка для восстановления позиции камеры при переключении между фрагментами
             if (restorePosition == null) {
-                Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 try {
                     LatLng userLocation = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());

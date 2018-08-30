@@ -13,5 +13,6 @@
     <color name="colorOpacity">#64ffffff</color>
     <color name="colorStartBackground">#8c000000</color>
     <color name="accent_material_light">#3588d3</color>
+    <color name="colorAccent">#FF3588D3</color>
 
 </resources>
