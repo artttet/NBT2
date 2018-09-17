@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="chiglintsev.notboringtrails20.PlaceActivity2">
+    tools:context="omsk.turinfo.PlaceActivity2">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

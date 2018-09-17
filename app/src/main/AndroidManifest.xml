@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="chiglintsev.notboringtrails20">
+    package="omsk.turinfo">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -32,13 +32,13 @@
             android:value="database2.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="23" />
+            android:value="24" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="chiglintsev.notboringtrails20.models.Places,                            chiglintsev.notboringtrails20.models.Route1,                            chiglintsev.notboringtrails20.models.Route2,                            chiglintsev.notboringtrails20.models.Route3,                            chiglintsev.notboringtrails20.models.Route4,                            chiglintsev.notboringtrails20.models.Route5,                            chiglintsev.notboringtrails20.models.Route6,                            chiglintsev.notboringtrails20.models.Route7" />
+            android:value="omsk.turinfo.models.Places,                           omsk.turinfo.models.Route1,                            omsk.turinfo.models.Route2,                            omsk.turinfo.models.Route3,                            omsk.turinfo.models.Route4,                            omsk.turinfo.models.Route5,                            omsk.turinfo.models.Route6,                            omsk.turinfo.models.Route7" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="omsk.turinfo.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme"
@@ -55,23 +55,23 @@
             android:value="@string/google_map_api_note" />
 
         <activity
-            android:name=".PlaceActivity2"
+            android:name="omsk.turinfo.PlaceActivity2"
             android:label=" "
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PhotoActivity"
+            android:name="omsk.turinfo.PhotoActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".RouteActivity"
+            android:name="omsk.turinfo.RouteActivity"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".StartActivity"
+            android:name="omsk.turinfo.StartActivity"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".InMoreActivity"
+            android:name="omsk.turinfo.InMoreActivity"
             android:screenOrientation="userPortrait"
             android:theme="@style/AppTheme" />
     </application>

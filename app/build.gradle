@@ -4,11 +4,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "chiglintsev.notboringtrails20"
+        applicationId "omsk.turinfo"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.01"
         testInstrumentationRunner "android.support.transition.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,15 +25,15 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
-    implementation 'com.android.support:animated-vector-drawable:28.0.0-rc01'
-    implementation 'com.android.support:exifinterface:28.0.0-rc01'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'com.android.support:support-v4:28.0.0-rc01'
-    implementation 'com.android.support:cardview-v7:28.0.0-rc01'
-    implementation 'com.android.support:recyclerview-v7:28.0.0-rc01'
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc02'
+    implementation 'com.android.support:animated-vector-drawable:28.0.0-rc02'
+    implementation 'com.android.support:exifinterface:28.0.0-rc02'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:28.0.0-rc02'
+    implementation 'com.android.support:cardview-v7:28.0.0-rc02'
+    implementation 'com.android.support:recyclerview-v7:28.0.0-rc02'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.android.support:design:28.0.0-rc01'
+    implementation 'com.android.support:design:28.0.0-rc02'
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
     compile 'com.yarolegovich:discrete-scrollview:1.4.9'
